@@ -67,6 +67,14 @@ const router = createRouter({
   routes,
 })
 
+const titleHandler = (to: any) => {
+  if (to.meta.title) {
+    document.title = `${to.meta.title} - ${store.state.app.title}`
+  } else {
+    document.title = "合租房管理系统"//没有就默认
+  }
+}
+
 // router guards
 router.beforeEach(async (to, from, next) => {
   nprogress.start()
@@ -74,21 +82,20 @@ router.beforeEach(async (to, from, next) => {
   const requiredRoles: any = to.meta.roles
   const currentRole = store.getters.getUserRole
   if (currentRole === '' && whiteList.indexOf(to.path) === -1) {
-      // 用户未登录，且页面不在不重定向白名单中，重定向到登录页
-      next('/login')
+    // 用户未登录，且页面不在不重定向白名单中，重定向到登录页
+    titleHandler(to)
+    next('/login')
   } else if (to.matched.length === 0) {
-      // 用户已登录，路由不存在无法跳转，重定向到404页面
-      next('/404')
+    // 用户已登录，路由不存在无法跳转，重定向到404页面
+    titleHandler(to)
+    next('/404')
   } else if (requiredRoles && requiredRoles.indexOf(currentRole) === -1) {
-      // 用户已登录，路由存在但无权限无法跳转，重定向到403页面
-      next('/403')
+    // 用户已登录，路由存在但无权限无法跳转，重定向到403页面
+    titleHandler(to)
+    next('/403')
   } else {
-      next()
-  }
-  if (to.meta.title) {
-      document.title = `${to.meta.title} - ${process.env.VUE_APP_TITLE}`
-  } else {
-      document.title = "合租房管理系统"//没有就默认
+    titleHandler(to)
+    next()
   }
 
 })

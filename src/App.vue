@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import 'nprogress/nprogress.css'
 
 let counter = ref(0);
@@ -25,4 +25,8 @@ let counter = ref(0);
 setInterval(() => {
   counter.value++;
 }, 1000);
+
+onMounted(() => {
+  console.log(import.meta.env.VITE_APP_TITLE)
+});
 </script>
