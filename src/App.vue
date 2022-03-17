@@ -1,13 +1,3 @@
-<script setup>
-import { ref } from 'vue'
-
-let counter = ref(0)
-
-setInterval(() => {
-  counter.value++
-}, 1000)
-</script>
-
 <template>
   <div>
     <header class="bg-white shadow" v-if="$route.meta.title">
@@ -25,3 +15,14 @@ setInterval(() => {
     </main>
   </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import 'nprogress/nprogress.css'
+
+let counter = ref(0);
+
+setInterval(() => {
+  counter.value++;
+}, 1000);
+</script>
