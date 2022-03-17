@@ -25,7 +25,6 @@ export default {
      */
     getUserInfo: (token: string) => {
         const reqUrl = `${store.getters.getApiServer}/user/currentUser?token=${token}`
-        console.log(reqUrl)
         return Network.fetchGet(reqUrl)
             .then((res: any) => {
                 if (res.status === 200) {

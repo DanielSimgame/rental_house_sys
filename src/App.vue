@@ -1,12 +1,13 @@
 <template>
   <div>
     <el-container>
-      <el-header style="height: auto">
-        <div class="bg-white shadow" v-if="$route.meta.title">
+      <el-header style="height: auto; padding-left: 0; padding-right: 0;">
+        <!-- <div class="bg-white shadow" v-if="$route.meta.title">
           <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
           </div>
-        </div>
+        </div> -->
+        <hzf-header></hzf-header>
       </el-header>
       <el-main style="padding: 0">
         <router-view />
@@ -16,11 +17,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount } from "vue";
 import 'nprogress/nprogress.css';
 import User from './utils/User';
 import store from "./store";
 import RequestUtil from "./utils/RequestUtil";
+
+import HzfHeader from './components/HzfHeader.vue';
+
+// const title = ref('nmsl');
 
 /**
  * @function initPage
@@ -33,15 +38,16 @@ const initPage = async () => {
     store.commit('setUserRole', 'user')
     RequestUtil.getUserInfo(token)
       .then(r => {
-        if (r.isLogin) {
-          store.commit('setUserRole', r.isAdmin ? 'admin' : 'user')
-        }
+        store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
+        store.commit('setUserInfo', r)
       })
   }
 };
 
-onMounted(() => {
-  // console.log(import.meta.env.VITE_APP_TITLE)
-  initPage()
-})
+onBeforeMount(() => {
+  // if (User.isLogin()) {
+  //   userInfo = User.getUserInfo();
+  // }
+  initPage();
+});
 </script>

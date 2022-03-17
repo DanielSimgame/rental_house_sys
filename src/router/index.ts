@@ -43,7 +43,6 @@ const routes: Array<RouteRecordRaw> = [
     component: Login,
     meta: {
       title: "登录",
-      roles: ["", "guest"]
     }
   },
   {

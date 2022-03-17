@@ -33,7 +33,7 @@
               <el-input v-model="loginForm.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input v-model="loginForm.password" placeholder="请输入密码" type="password"></el-input>
+              <el-input v-model="loginForm.password" placeholder="请输入密码" @keyup.enter.native="onLoginClick" type="password"></el-input>
             </el-form-item>
             <el-form-item>
               <div class="login-submit flex-row justify-between min-w-full">
@@ -109,11 +109,14 @@ let loginForm = reactive({
  * @description 登录按钮点击事件
  * */
 const onLoginClick = async () => {
+  if (eulaAgreed.value === false) {
+    return
+  }
   loading.value = true
   await RequestUtil.postLogin(loginForm)
       .then(r => {
         loading.value = false
-        if (r.isLogin || r.code === 0) {
+        if (r.isLogin) {
           User.setToken(r.token)
           if (r.isAdmin) {
             User.setRole('admin')
@@ -122,7 +125,7 @@ const onLoginClick = async () => {
           }
           RouterUtil.goHome()
         } else {
-          NotificationUtil.Notify(r.errorMes,{
+          NotificationUtil.Notify('请检查您的账号密码', {
             title: '登录失败',
             type: msgType.ERROR,
           })
