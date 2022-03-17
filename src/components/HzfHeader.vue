@@ -4,7 +4,7 @@
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
         </div>
         <div class="user-info-container">
-            <p>名字</p>
+            <p>名字 {{ userInfo.name }}</p>
         </div>
     </div>
 </template>
@@ -16,9 +16,13 @@ import store from "../store"
 export default {
     name: "HzfHeader",
     setup() {
-        let userInfo = reactive({})
+        let userInfo = reactive({
+            name: '',
+            role: ''
+        })
         store.watch(state => state.userInfo, (newVal) => {
-            userInfo = newVal
+            userInfo.name = newVal.name
+            userInfo.role = newVal.role
             console.log(userInfo)
         })
         return {
