@@ -9,6 +9,8 @@
   "dependencies": {
     "element-plus": "^2.1.4",
     "nprogress": "^0.2.0",
+    "sass": "^1.49.9",
+    "sass-loader": "^12.6.0",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"

@@ -4,15 +4,16 @@ import store from "@/store"
 // import { routes } from './routes.js'
 
 // Components
-import Home from "../views/Home.vue"
+import Home from "@/views/Home.vue"
 // const Home = () => import("../views/Home.vue")
-const About = () => import("../views/About.vue")
-const NotFound = () => import('../views/error/NotFound.vue')
-const NoPermission = () => import('../views/error/NoPermission.vue')
-const Login = () => import('../views/user/Login.vue')
+const About = () => import("@/views/About.vue")
+const NotFound = () => import('@/views/error/NotFound.vue')
+const NoPermission = () => import('@/views/error/NoPermission.vue')
+const Login = () => import('@/views/user/Login.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/register', '/404', '/403'] // 不重定向白名单
+const redirectList = ['/login', '/register'] // 重定向名单
 
 nprogress.configure({ showSpinner: false })
 
@@ -42,6 +43,7 @@ const routes: Array<RouteRecordRaw> = [
     component: Login,
     meta: {
       title: "登录",
+      roles: ["", "guest"]
     }
   },
   {
@@ -93,7 +95,12 @@ router.beforeEach(async (to, from, next) => {
     // 用户已登录，路由存在但无权限无法跳转，重定向到403页面
     titleHandler(to)
     next('/403')
+  } else if (currentRole !== '' && redirectList.indexOf(to.path) !== -1) {
+    // 用户已登录，不允许访问登录页和注册页
+    titleHandler(to)
+    next('/')
   } else {
+    // 用户已登录，正常访问网页
     titleHandler(to)
     next()
   }

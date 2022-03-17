@@ -1,4 +1,6 @@
 export default {
     count: state => state.count,
-    getUserRole: state => state.userRole
+    getApiServer: state => state.app.apiUrl,
+    getUserRole: state => state.userRole,
+    getUserInfo: state => state.userInfo,
 }

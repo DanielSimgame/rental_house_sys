@@ -21,6 +21,11 @@ export default {
      */
     setUserInfo(state, payload) {
         state.userInfo = payload
+        if (payload.role === 1) {
+            state.userRole = 'admin'
+        } else if (payload.role === 0) {
+            state.userRole = 'user'
+        }
     },
     /**
      * @function setDefaultUserInfo

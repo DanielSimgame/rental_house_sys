@@ -1,5 +1,5 @@
 import Network from "./basic/Network";
-import store from "../store";
+import store from "@/store";
 
 export default {
     /**
@@ -9,7 +9,7 @@ export default {
      * */
     postLogin: (data: Object) => {
         const reqUrl = `${store.getters.getApiServer}/user/login`
-        return Network.fetchPost(reqUrl,null, data)
+        return Network.fetchPost(reqUrl, null, data)
             .then((res: any) => {
                 if (res.status === 200) {
                     return res.json()
@@ -18,4 +18,21 @@ export default {
                 }
             })
     },
+    /**
+     * @function getUserInfo
+     * @description 获取用户信息
+     * @param {String} token 用户token
+     */
+    getUserInfo: (token: string) => {
+        const reqUrl = `${store.getters.getApiServer}/user/currentUser?token=${token}`
+        console.log(reqUrl)
+        return Network.fetchGet(reqUrl)
+            .then((res: any) => {
+                if (res.status === 200) {
+                    return res.json()
+                } else {
+                    return Promise.reject(res)
+                }
+            })
+    }
 }
