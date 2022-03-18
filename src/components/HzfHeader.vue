@@ -13,7 +13,7 @@
             v-if="userInfo.name !== '' ? true : false"
         >
             <div
-                class="user-info__card px-4 py-4 rounded-xl cursor-pointer flex flex-row items-center transition-all ease-in-out hover:shadow-lg"
+                class="user-info__card bg-white hover:bg-indigo-600 text-black hover:text-white px-4 py-4 rounded-xl cursor-pointer flex flex-row items-center transition-all ease-in-out hover:shadow-lg"
                 @click="onUserCardClick"
             >
                 <div class="portrait rounded-full overflow-hidden">
@@ -22,7 +22,7 @@
                 <p class="mx-2">{{ userInfo.name }}</p>
             </div>
             <p class="ml-2 mr-5">{{ userInfo.role === 1 ? '管理员' : '用户' }}</p>
-            <el-button class="mx-2" @click="onLogoutClick">退出登录</el-button>
+            <el-button class="mx-2" @click="onLogoutClick" plain>退出登录</el-button>
         </div>
     </div>
 </template>
@@ -65,7 +65,7 @@ export default {
         const onLogoutClick = () => {
             store.commit('clearUserInfo')
             User.delToken()
-            NotificationUtil.Notify('退出登录成功')
+            NotificationUtil.Notify('退出登录成功', { type: 'success', title: '退出登录' })
             router.push('/login')
             window.location.reload()
         }
