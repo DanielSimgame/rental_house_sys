@@ -7,6 +7,7 @@ import store from "@/store"
 import Home from "@/views/Home.vue"
 // const Home = () => import("../views/Home.vue")
 const About = () => import("@/views/About.vue")
+const Admin = () => import('@/views/admin/index.vue')
 const NotFound = () => import('@/views/error/NotFound.vue')
 const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
@@ -34,6 +35,15 @@ const routes: Array<RouteRecordRaw> = [
     component: About,
     meta: {
       title: "关于",
+      roles: ["admin"]
+    }
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin,
+    meta: {
+      title: "管理后台",
       roles: ["admin"]
     }
   },

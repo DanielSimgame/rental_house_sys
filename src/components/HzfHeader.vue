@@ -3,10 +3,22 @@
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
         </div>
-        <div class="user-info-container" v-if="userInfo.name !== '' ? true : false">
-            <p>名字 {{ userInfo.name }}</p>
-            <p>角色 {{ userInfo.role === 1 ? '管理员' : '用户' }}</p>
-            <el-button @click="onLogoutClick">退出登录</el-button>
+        <div
+            class="user-info__container min-w-fit flex flex-row justify-between items-center px-5"
+            v-if="userInfo.name !== '' ? true : false"
+        >
+            <div
+                class="user-info__card px-4 py-4 rounded-xl cursor-pointer flex flex-row
+                 items-center transition-all ease-in-out hover:shadow-lg"
+                @click="onUserCardClick"
+            >
+                <div class="portrait rounded-full overflow-hidden">
+                    <img :src="userInfo.portrait" alt="头像" width="40" height="40" />
+                </div>
+                <p class="mx-2">{{ userInfo.name }}</p>
+            </div>
+            <p class="mx-2">{{ userInfo.role === 1 ? '管理员' : '用户' }}</p>
+            <el-button class="mx-2" @click="onLogoutClick">退出登录</el-button>
         </div>
     </div>
 </template>
@@ -24,13 +36,14 @@ export default {
     setup() {
         let userInfo = reactive({
             name: '',
-            role: ''
+            role: '',
+            portrait: ''
         })
 
         const userInfoListener = computed(() => { return store.state.userInfo })
         const getUserRole = computed(() => {
             const getter = store.getters.getRoleInUserInfo
-            if(getter === 1) {
+            if (getter === 1) {
                 return '管理员'
             } else if (getter === 0) {
                 return '用户'
@@ -42,6 +55,7 @@ export default {
         watch(userInfoListener, (newVal) => {
             userInfo.name = newVal.name
             userInfo.role = newVal.role
+            userInfo.portrait = newVal.portrait
         }, { immediate: true, deep: true })
 
         const onLogoutClick = () => {
@@ -52,9 +66,14 @@ export default {
             window.location.reload()
         }
 
+        const onUserCardClick = () => {
+            router.push('/user')
+        }
+
         return {
             userInfo,
-            onLogoutClick
+            onLogoutClick,
+            onUserCardClick
         }
     }
 }
