@@ -11,10 +11,11 @@ const Admin = () => import('@/views/admin/index.vue')
 const NotFound = () => import('@/views/error/NotFound.vue')
 const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
+const SignUp = () => import('@/views/user/SignUp.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
-const whiteList = ['/login', '/register', '/404', '/403'] // 不重定向白名单
-const redirectList = ['/login', '/register'] // 重定向名单
+const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
+const redirectList = ['/login', '/register'] // 已登录重定向名单
 
 nprogress.configure({ showSpinner: false })
 
@@ -53,6 +54,14 @@ const routes: Array<RouteRecordRaw> = [
     component: Login,
     meta: {
       title: "登录",
+    }
+  },
+    {
+    path: "/signup",
+    name: "SignUp",
+    component: SignUp,
+    meta: {
+      title: "注册",
     }
   },
   {

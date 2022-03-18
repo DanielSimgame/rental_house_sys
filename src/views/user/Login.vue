@@ -54,7 +54,7 @@
                     :loading="loading"
                   >登录</el-button>
                 </el-tooltip>
-                <el-button size="large" class="w-20" @click="onLoginClick">注册</el-button>
+                <el-button size="large" class="w-20" @click="onSignupClick">注册</el-button>
               </div>
             </el-form-item>
           </el-form>
@@ -90,7 +90,7 @@ import RouterUtil from "@/utils/RouterUtil";
 import NotificationUtil, { msgType } from "@/utils/NotificationUtil";
 import User from "@/utils/User";
 
-const disabledMsg = ref('手机验证码登录暂停使用，请使用账号密码登录')
+const disabledMsg = ref('手机验证码登录未开放，请使用账号密码登录')
 let loginMethod = ref('account')
 let eulaAgreed = ref(false)
 let loginBtnDisabled = ref(true)
@@ -132,6 +132,17 @@ const onLoginClick = async () => {
         })
       }
     })
+    .catch(err => {
+      console.log(err)
+    })
+}
+
+/**
+ * @function onSignupClick
+ * @description 注册按钮点击事件
+ */
+const onSignupClick = () => {
+  RouterUtil.goSignup()
 }
 
 /**
@@ -163,7 +174,7 @@ const onPrivacyClick = () => {
 .login-bg {
   height: 600px;
   background-image: url("@/assets/images/bg_login.jpeg");
-  background-size: 100% auto;
+  background-size: auto;
   background-position: center;
   background-repeat: no-repeat;
 }

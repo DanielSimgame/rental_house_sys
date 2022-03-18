@@ -12,6 +12,7 @@ export default createStore({
         },
         count: 0,
         userRole: '',
+        defaultAvatar: 'https://pics.keker.icu/face.jpg',
         userInfo: {
             id: "",
             name: "",
