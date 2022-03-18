@@ -8,6 +8,9 @@ export default {
     getToken: () => {
         return Storage.get("jwt");
     },
+    delToken: () => {
+        Storage.remove("jwt");
+    },
     setRole: (role: string) => {
         store.commit("setUserRole", role);
     },

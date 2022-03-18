@@ -3,4 +3,5 @@ export default {
     getApiServer: state => state.app.apiUrl,
     getUserRole: state => state.userRole,
     getUserInfo: state => state.userInfo,
+    getRoleInUserInfo: state => state.userInfo.role,
 }

@@ -20,7 +20,7 @@ export default createStore({
             phone: "",
             username: "",
             gender: "",
-            role: 0,
+            role: -1,
             portrait: "",
             owndHouseIdList: [],
             rentedHouseIdList: []

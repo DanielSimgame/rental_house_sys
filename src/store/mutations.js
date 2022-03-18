@@ -28,6 +28,27 @@ export default {
         }
     },
     /**
+     * @function clearUserInfo
+     * @description clear user info
+     * @param {Object} state vuex store state
+     */
+    clearUserInfo(state) {
+        const emptyUserInfo= {
+            id: "",
+            name: "",
+            email: "",
+            detail: "",
+            phone: "",
+            username: "",
+            gender: "",
+            role: 0,
+            portrait: "",
+            owndHouseIdList: [],
+            rentedHouseIdList: []
+        }
+        state.userInfo = emptyUserInfo
+    },
+    /**
      * @function setDefaultUserInfo
      * @description set user info to default values
      * @param {Object} state vuex store state
