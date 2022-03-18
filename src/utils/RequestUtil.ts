@@ -77,9 +77,32 @@ export default {
     /**
      * @function getDistricts
      * @description 获取所有的区域信息，返回值为对象数组
+     * @param {String} parentId 父节点id
      */
-    getDistricts: async (): Promise<Object> => {
-        const reqUrl = `${store.getters.getApiServer}/areaInfo/list`
+    getDistricts: async (parentId: string): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/areaInfo/list?parentId=${parentId}`
+        const res: any = await Network.fetchGet(reqUrl);
+        if (res.status === 200) {
+            return res.json();
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+     * @function getHouseList
+     * @description 获取房源列表
+     * @param {Number} pageNum 页码
+     * @param {Number} pageSize 每页数量
+     * @param {String} city
+     * @param {String} district
+     */
+    getHouseList: async (city: string, district: string, pageNum: number, pageSize: number): Promise<Object> => {
+        let reqUrl = ''
+        if (city !== '' && district !== '') {
+            reqUrl = `${store.getters.getApiServer}/house/list?cityName=${city}&cityProper=${district}&pageNum=${pageNum}&pageSize=${pageSize}`
+        } else {
+            reqUrl = `${store.getters.getApiServer}/house/list?pageNum=${pageNum}&pageSize=${pageSize}`
+        }
         const res: any = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
             return res.json();

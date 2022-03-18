@@ -43,11 +43,11 @@ export default {
     TopMsg(message, ...args) {
         ElMessage({
             message: message,
-            type: args.type || msgType.INFO,
-            center: args.centered || msgTextAlign.CENTERED,
-            showClose: args.showClose || msgShowClose.HIDE,
-            duration: args.duration || msgDuration.SHORT,
-            offset: args.offset || msgOffset.NO_OFFSET
+            type: args[0].type || msgType.INFO,
+            center: args[0].centered || msgTextAlign.CENTERED,
+            showClose: args[0].showClose || msgShowClose.HIDE,
+            duration: args[0].duration || msgDuration.SHORT,
+            offset: args[0].offset || msgOffset.NO_OFFSET
         })
     },
     /**
@@ -102,13 +102,13 @@ export default {
      * */
     Notify(message, ...args) {
         ElNotification({
-            title: args.title || '提示',
+            title: args[0].title || '提示',
             message: message,
-            type: args.type || msgType.INFO,
-            position: args.position || msgPosition.TOP_RIGHT,
-            duration: args.duration || msgDuration.SHORT,
-            offset: args.offset || msgOffset.NO_OFFSET,
-            dangerouslyUseHTMLString: args.HTML || false,
+            type: args[0].type || msgType.INFO,
+            position: args[0].position || msgPosition.TOP_RIGHT,
+            duration: args[0].duration || msgDuration.SHORT,
+            offset: args[0].offset || msgOffset.NO_OFFSET,
+            dangerouslyUseHTMLString: args[0].HTML || false,
         })
     }
 }

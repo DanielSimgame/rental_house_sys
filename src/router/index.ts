@@ -12,6 +12,7 @@ const NotFound = () => import('@/views/error/NotFound.vue')
 const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
 const SignUp = () => import('@/views/user/SignUp.vue')
+const Query = () => import('@/views/query/index.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
@@ -37,6 +38,15 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "关于",
       roles: ["admin"]
+    }
+  },
+  {
+    path: "/search/:keyword",
+    name: "Query",
+    component: Query,
+    meta: {
+      title: "房源查询",
+      roles: ["admin", "user"]
     }
   },
   {

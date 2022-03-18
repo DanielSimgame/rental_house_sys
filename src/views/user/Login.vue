@@ -32,7 +32,7 @@
               <el-input
                 v-model="loginForm.password"
                 placeholder="请输入密码"
-                @keyup.enter.native="onLoginClick"
+                @keyup.enter="onLoginClick"
                 type="password"
               ></el-input>
             </el-form-item>

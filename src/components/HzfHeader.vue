@@ -1,5 +1,10 @@
 <template>
     <div class="bg-white shadow flex flex-row justify-between">
+        <div class="logo-container my-auto px-5">
+            <router-link to="/">
+                <img class="logo" :src="logoImg" alt="合租系统Logo" />
+            </router-link>
+        </div>
         <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
         </div>
@@ -8,8 +13,7 @@
             v-if="userInfo.name !== '' ? true : false"
         >
             <div
-                class="user-info__card px-4 py-4 rounded-xl cursor-pointer flex flex-row
-                 items-center transition-all ease-in-out hover:shadow-lg"
+                class="user-info__card px-4 py-4 rounded-xl cursor-pointer flex flex-row items-center transition-all ease-in-out hover:shadow-lg"
                 @click="onUserCardClick"
             >
                 <div class="portrait rounded-full overflow-hidden">
@@ -29,7 +33,7 @@ import store from "@/store"
 import User from '@/utils/User';
 import router from "../router";
 import NotificationUtil from "../utils/NotificationUtil";
-
+import logoImg from '@/assets/images/logo.png';
 
 export default {
     name: "HzfHeader",
@@ -71,6 +75,7 @@ export default {
         }
 
         return {
+            logoImg,
             userInfo,
             onLogoutClick,
             onUserCardClick
@@ -78,3 +83,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.logo{
+    height: 60px;
+}
+</style>
