@@ -1,18 +1,24 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router"
 import nprogress from 'nprogress'
 import store from "@/store"
+import User from "@/utils/User"
 // import { routes } from './routes.js'
 
 // Components
 import Home from "@/views/Home.vue"
+import RequestUtil from "@/utils/RequestUtil"
 // const Home = () => import("../views/Home.vue")
 const About = () => import("@/views/About.vue")
-const Admin = () => import('@/views/admin/index.vue')
 const NotFound = () => import('@/views/error/NotFound.vue')
 const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
 const SignUp = () => import('@/views/user/SignUp.vue')
 const Query = () => import('@/views/query/index.vue')
+
+// 管理面板与次级路由
+const Admin = () => import('@/views/admin/Layout.vue')
+const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
+const AdminSettings = () => import('@/views/admin/Settings.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
@@ -54,9 +60,29 @@ const routes: Array<RouteRecordRaw> = [
     name: "Admin",
     component: Admin,
     meta: {
-      title: "管理后台",
+      title: "管理面板",
       roles: ["admin"]
-    }
+    },
+    children: [
+      {
+        path: "/admin/dashboard",
+        name: "AdminDashboard",
+        component: AdminDashboard,
+        meta: {
+          title: "管理面板",
+          roles: ["admin"]
+        }
+      },
+      {
+        path: "/admin/settings",
+        name: "AdminSettings",
+        component: AdminSettings,
+        meta: {
+          title: "后台设置",
+          roles: ["admin"]
+        }
+      }
+    ]
   },
   {
     path: "/login",
@@ -66,7 +92,7 @@ const routes: Array<RouteRecordRaw> = [
       title: "登录",
     }
   },
-    {
+  {
     path: "/signup",
     name: "SignUp",
     component: SignUp,
@@ -115,20 +141,40 @@ const titleHandler = (to: any) => {
 router.beforeEach(async (to, from, next) => {
   nprogress.start()
   // 检查用户角色
+  const token = User.getToken()
   const requiredRoles: any = to.meta.roles
   const currentRole = store.getters.getUserRole
   if (currentRole === '' && whiteList.indexOf(to.path) === -1) {
-    // 用户未登录，且页面不在不重定向白名单中，重定向到登录页
+    // 用户未登录，且页面不在 不重定向白名单 中，重定向到登录页
     titleHandler(to)
     next('/login')
   } else if (to.matched.length === 0) {
     // 用户已登录，路由不存在无法跳转，重定向到404页面
     titleHandler(to)
     next('/404')
-  } else if (requiredRoles && requiredRoles.indexOf(currentRole) === -1) {
-    // 用户已登录，路由存在但无权限无法跳转，重定向到403页面
-    titleHandler(to)
-    next('/403')
+  } else if ((currentRole === 'admin' || 'user') && requiredRoles && requiredRoles.indexOf(currentRole) === -1) {
+    // 用户已登录，路由存在但无权限无法跳转，向后端请求查询用户身份再进行判断
+    if (!token) {
+      titleHandler(to)
+      next('/login')
+    } else {
+      await RequestUtil.getUserInfo(token)
+        .then(res => {
+          if (res.role === 1) {
+            console.log('用户身份合法')
+            titleHandler(to)
+            next()
+          } else {
+            console.log('用户身份不合法')
+            titleHandler(to)
+            next('/403')
+          }
+        }).catch(err => {
+          console.log(err)
+          titleHandler(to)
+          next('/403')
+        })
+    }
   } else if (currentRole !== '' && redirectList.indexOf(to.path) !== -1) {
     // 用户已登录，不允许访问登录页和注册页
     titleHandler(to)
@@ -138,7 +184,6 @@ router.beforeEach(async (to, from, next) => {
     titleHandler(to)
     next()
   }
-
 })
 
 router.afterEach(() => {

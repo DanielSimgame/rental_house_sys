@@ -1,9 +1,10 @@
 <template>
   <el-affix offset-top="0">
     <div class="bg-white shadow flex flex-row justify-between">
-      <div class="logo-container my-auto px-5">
-        <router-link to="/">
-          <img class="logo" :src="logoImg" alt="合租系统Logo" />
+      <div class="logo-container my-auto px-5 group">
+        <router-link to="/" class="relative">
+          <img class="logo w-16 h-16 top-0.5 translate-y-4 z-30" :src="logoImg" alt="合租系统Logo" />
+          <div class="logo-tip z-20 -translate-y-6 group-hover:translate-x-16 opacity-0 group-hover:opacity-100 transition-all ease-in-out font-bold text-lg">首页</div>
         </router-link>
       </div>
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -115,5 +116,9 @@ export default {
 <style scoped>
 .logo {
   height: 60px;
+}
+.logo-tip {
+  font-style: italic;
+  transition-duration: 300ms;
 }
 </style>

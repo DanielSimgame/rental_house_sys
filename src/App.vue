@@ -6,7 +6,7 @@
           <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
           </div>
-        </div> -->
+        </div>-->
         <hzf-header></hzf-header>
       </el-header>
       <el-main style="padding: 0">
@@ -25,7 +25,7 @@ import store from "./store";
 import RequestUtil from "./utils/RequestUtil";
 
 import HzfHeader from './components/HzfHeader.vue';
-import { msgType } from "./utils/NotificationUtil";
+import Notification, { msgType } from "./utils/NotificationUtil";
 
 // const title = ref('nmsl');
 
@@ -34,6 +34,17 @@ import { msgType } from "./utils/NotificationUtil";
  * @description 初始化页面
  */
 const initPage = async () => {
+
+  // 以下代码导致无限403bug
+  
+  // 先将本地session中的信息写入store，再从后端获取用户信息并覆盖
+  // const localUserInfo = User.getUserInfoInSession();
+  // if (localUserInfo) {
+  //   store.commit('setUserInfo', localUserInfo)
+  // }
+
+  // 以上代码导致无限403bug
+
   const token = User.getToken()
   if (token) {
     // 如有token则先让用户以user权限访问，再向后端请求权限
@@ -42,8 +53,10 @@ const initPage = async () => {
       .then(r => {
         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
         store.commit('setUserInfo', r)
+        User.setUserInfoInSession(r)
       })
       .catch(e => {
+        // console.log(e)
         Notification.Notify('连接服务器失败，无法获取用户信息', {
           type: msgType.ERROR,
           title: '出错',

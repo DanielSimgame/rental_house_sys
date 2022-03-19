@@ -1,5 +1,6 @@
 import Storage from "./basic/Storage";
 import store from "@/store";
+import Crypto from "./basic/Crypto";
 
 export default {
     setToken: (token: string) => {
@@ -14,4 +15,15 @@ export default {
     setRole: (role: string) => {
         store.commit("setUserRole", role);
     },
+    setUserInfoInSession: (userInfo: Object) => {
+        const base64 = Crypto.getEncode64(JSON.stringify(userInfo));
+        Storage.set("userInfo", base64);
+    },
+    getUserInfoInSession: () => {
+        const base64 = Storage.get("userInfo");
+        if (base64) {
+            return JSON.parse(Crypto.getDecode64(base64));
+        }
+        return null;
+    }
 }
