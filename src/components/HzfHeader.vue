@@ -1,4 +1,5 @@
 <template>
+<el-affix offset-top="0">
     <div class="bg-white shadow flex flex-row justify-between">
         <div class="logo-container my-auto px-5">
             <router-link to="/">
@@ -25,6 +26,8 @@
             <el-button class="mx-2" @click="onLogoutClick" plain>退出登录</el-button>
         </div>
     </div>
+</el-affix>
+    
 </template>
 
 <script>

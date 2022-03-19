@@ -19,6 +19,7 @@
 <script setup>
 import { onBeforeMount } from "vue";
 import 'nprogress/nprogress.css';
+import '@/assets/scss/element/index.scss';
 import User from './utils/User';
 import store from "./store";
 import RequestUtil from "./utils/RequestUtil";
@@ -34,7 +35,7 @@ import HzfHeader from './components/HzfHeader.vue';
 const initPage = async () => {
   const token = User.getToken()
   if (token) {
-    // 先让用户以user权限访问，再向后端请求权限
+    // 如有token则先让用户以user权限访问，再向后端请求权限
     store.commit('setUserRole', 'user')
     RequestUtil.getUserInfo(token)
       .then(r => {
@@ -54,26 +55,4 @@ onBeforeMount(() => {
 
 <style lang="scss">
 @use '@/assets/scss/nprogress/index.scss';
-
-:root {
-  --el-color-primary: rgba(70, 70, 229, 1) !important;
-  --el-button-disabled-bg-color: #464699 !important;
-  --el-button-hover-bg-color: #4646ff !important;
-}
-
-.el-button:focus, .el-button:hover {
-  background-color: #4650ff !important;
-  color: #fff !important;
-}
-
-.el-button:active {
-  background-color: #3f3fcf !important;
-  color: #fff !important;
-}
-
-.el-button:disabled {
-  background-color: #464699 !important;
-  color: #fff !important;
-}
-
 </style>

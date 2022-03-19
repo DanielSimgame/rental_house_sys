@@ -98,8 +98,14 @@ const router = createRouter({
 })
 
 const titleHandler = (to: any) => {
+
   if (to.meta.title) {
-    document.title = `${to.meta.title} - ${store.state.app.title}`
+    if (to.name === "Query") {
+      const keyword = JSON.parse(decodeURI(to.params.keyword))
+      document.title = `${keyword[1] + keyword[2]}房源信息 - ${store.state.app.title}`
+    } else {
+      document.title = `${to.meta.title} - ${store.state.app.title}`
+    }
   } else {
     document.title = "合租房管理系统"//没有就默认
   }
