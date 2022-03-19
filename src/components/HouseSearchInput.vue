@@ -1,38 +1,41 @@
 <template>
-    <div class="flex justify-center items-center w-full" :class="direction === 'vertical' ? 'flex-col' : 'flex-row'">
-        <el-cascader
-            ref="cascader"
-            class="w-full"
-            :key="is_cascader"
-            v-model="addressArr"
-            placeholder="请选择地区"
-            size="large"
-            :props="addressProps"
-            :options="provinces"
-            @change="handleCityChange"
-          />
-          <el-link
-            :underline="false"
-            @click="onSearchClick"
-            class="query-btn inline-flex items-center justify-center rounded-md border border-transparent
-            bg-indigo-600 text-base font-medium leading-6 text-white transition
-            duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
-            :class="direction === 'vertical' ? 'mt-5 w-36 h-14 px-5 py-3' : 'ml-5 w-32 h-12 p-0'"
-          ><span :class="direction === 'vertical' ? 'text-xl' : 'text-lg'">查询房源</span></el-link>
-    </div>
+  <div
+    class="flex justify-center items-center w-full"
+    :class="direction === 'vertical' ? 'flex-col' : 'flex-row'"
+  >
+    <el-cascader
+      ref="cascader"
+      class="w-full"
+      :key="is_cascader"
+      v-model="addressArr"
+      placeholder="请选择地区"
+      size="large"
+      :props="addressProps"
+      :options="provinces"
+      @change="handleCityChange"
+    />
+    <el-link
+      :underline="false"
+      @click="onSearchClick"
+      class="query-btn inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
+      :class="direction === 'vertical' ? 'mt-5 w-36 h-14 px-5 py-3' : 'ml-5 w-32 h-12 p-0'"
+    >
+      <span :class="direction === 'vertical' ? 'text-xl' : 'text-lg'">查询房源</span>
+    </el-link>
+  </div>
 </template>
 
 <script setup>
 import NotificationUtil from '@/utils/NotificationUtil';
 import RequestUtil from '@/utils/RequestUtil';
-import RouterUtil from '@/utils/RouterUtil';
+import { goSearch } from '@/utils/RouterUtil';
 import { onMounted, reactive, ref } from 'vue-demi';
 
 defineProps({
-    direction: {
-        type: String,
-        default: 'vertical',
-    },
+  direction: {
+    type: String,
+    default: 'vertical',
+  },
 })
 
 let cascader = ref(null)
@@ -91,10 +94,10 @@ const handleCityChange = (selectedOptions) => {
  * @description 点击查询按钮
  */
 const onSearchClick = () => {
-  if(cascader.value.getCheckedNodes().length !== 0) {
-    RouterUtil.goSearch(JSON.stringify(selectedCity.value))
+  if (cascader.value.getCheckedNodes().length !== 0) {
+    goSearch(JSON.stringify(selectedCity.value))
   } else {
-    NotificationUtil.TopMsg('请先选择一个城市', {type: 'warning', duration: 2000, offset: 100})
+    NotificationUtil.TopMsg('请先选择一个城市', { type: 'warning', duration: 2000, offset: 100 })
   }
 }
 

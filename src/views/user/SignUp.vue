@@ -96,7 +96,7 @@ import store from '@/store';
 import RequestUtil from '@/utils/RequestUtil';
 import User from '@/utils/User';
 import NotificationUtil from '@/utils/NotificationUtil';
-import RouterUtil from '@/utils/RouterUtil';
+import { goHome } from '@/utils/RouterUtil';
 
 // 登陆表单
 let signupForm = reactive({
@@ -189,7 +189,7 @@ const onSignupSubmit = async () => {
                     .then(r => {
                         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
                         store.commit('setUserInfo', r)
-                        RouterUtil.goHome()
+                        goHome()
                     })
             } else {
                 NotificationUtil.Notify('注册出错，请重试。若反复出现请联系网站管理员。', {

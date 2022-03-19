@@ -86,7 +86,7 @@
 import { reactive, ref } from 'vue'
 import store from "@/store";
 import RequestUtil from "@/utils/RequestUtil";
-import RouterUtil from "@/utils/RouterUtil";
+import { goHome, goSignup } from "@/utils/RouterUtil";
 import NotificationUtil, { msgType } from "@/utils/NotificationUtil";
 import User from "@/utils/User";
 
@@ -123,7 +123,7 @@ const onLoginClick = async () => {
           .then(r => {
             store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
             store.commit('setUserInfo', r)
-            RouterUtil.goHome()
+            goHome()
           })
       } else {
         NotificationUtil.Notify('请检查您的账号密码', {
@@ -142,7 +142,7 @@ const onLoginClick = async () => {
  * @description 注册按钮点击事件
  */
 const onSignupClick = () => {
-  RouterUtil.goSignup()
+  goSignup()
 }
 
 /**

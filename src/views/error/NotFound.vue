@@ -15,11 +15,3 @@
     </div>
   </header>
 </template>
-
-<style>
-.error-text {
-  text-align: center;
-  font-weight: bold;
-  font-style: italic;
-}
-</style>

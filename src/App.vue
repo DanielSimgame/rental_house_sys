@@ -25,6 +25,7 @@ import store from "./store";
 import RequestUtil from "./utils/RequestUtil";
 
 import HzfHeader from './components/HzfHeader.vue';
+import { msgType } from "./utils/NotificationUtil";
 
 // const title = ref('nmsl');
 
@@ -42,6 +43,13 @@ const initPage = async () => {
         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
         store.commit('setUserInfo', r)
       })
+      .catch(e => {
+        Notification.Notify('连接服务器失败，无法获取用户信息', {
+          type: msgType.ERROR,
+          title: '出错',
+          duration: 3000
+        })
+      })
   }
 };
 
@@ -55,4 +63,12 @@ onBeforeMount(() => {
 
 <style lang="scss">
 @use '@/assets/scss/nprogress/index.scss';
+</style>
+
+<style>
+.error-text {
+  text-align: center;
+  font-weight: bold;
+  font-style: italic;
+}
 </style>
