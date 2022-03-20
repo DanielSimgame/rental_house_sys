@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue-demi";
+import { onMounted, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import AdminAsideMenuVue from "../../components/AdminAsideMenu.vue";
 

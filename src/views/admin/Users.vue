@@ -1,8 +1,5 @@
 <template>
-    <h1 class="top-title-text text-4xl my-5 pl-4 relative">
-        <!-- <span>{{ keyword[0] }}</span> -->
-        <span>用户管理</span>
-    </h1>
+    <TopTitleVue text="用户管理" />
     <div class="func-container flex flex-col w-full">
         <div class="admins__manage grid grid-cols-4 lg:grid-cols-4 md:grid-cols-2 gap-10 px-10 py-5">
             <div class="admins__grant-wrap col-span-2">
@@ -76,6 +73,7 @@
 </template>
 
 <script setup>
+import TopTitleVue from '@/components/TopTitle.vue';
 import NotificationUtil, { msgType } from "@/utils/NotificationUtil";
 import RequestUtil from "@/utils/RequestUtil";
 import { ref } from 'vue'

@@ -14,6 +14,7 @@ const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
 const SignUp = () => import('@/views/user/SignUp.vue')
 const Query = () => import('@/views/query/index.vue')
+const NewHouse = () => import('@/views/house/NewHouse.vue')
 
 // 管理面板与次级路由
 const Admin = () => import('@/views/admin/Layout.vue')
@@ -54,6 +55,15 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       title: "房源查询",
       roles: ["admin", "user"]
+    }
+  },
+  {
+    path: "/house/new",
+    name: "NewHouse",
+    component: NewHouse,
+    meta: {
+      title: "发布房源",
+      roles: ["admin", "user"],
     }
   },
   {

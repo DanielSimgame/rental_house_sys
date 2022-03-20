@@ -121,7 +121,7 @@ export default {
             return Promise.reject('userId不能为空')
         } else {
             const reqUrl = `${store.getters.getApiServer}/user/grant?userId=${userId}`
-            const res: any = await Network.fetchGet(reqUrl, {token: User.getToken()});
+            const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
             if (res.status === 200) {
                 return {
                     success: true,
@@ -132,7 +132,7 @@ export default {
             }
         }
     },
-        /**
+    /**
      * @function getDelAdmin
      * @description 删除管理员
      * @param {String} userId 用户id
@@ -142,7 +142,7 @@ export default {
             return Promise.reject('userId不能为空')
         } else {
             const reqUrl = `${store.getters.getApiServer}/user/deleteAdmin?userId=${userId}`
-            const res: any = await Network.fetchGet(reqUrl, {token: User.getToken()});
+            const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
             if (res.status === 200) {
                 return {
                     success: true,
@@ -151,6 +151,51 @@ export default {
             } else {
                 return Promise.reject(res);
             }
+        }
+    },
+    /**
+     * @function postCreateHouse
+     * @description 创建房源
+     * @param {Object} data 房源信息
+     */
+    postCreateHouse: async (data: Object): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/house/create`
+        const res: any = await Network.fetchPost(reqUrl, null, data);
+        if (res.status === 200) {
+            console.log('House create Api', res)
+            return res.json();
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+     * @function getDeleteHouse
+     * @description 删除房源
+     * @param {String} houseId 房源信息
+     */
+    getDeleteHouse: async (houseId: String): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/house/delete?houseId=${houseId}`
+        const res: any = await Network.fetchGet(reqUrl);
+        if (res.status === 200) {
+            console.log('House delete Api', res)
+            return res.json();
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+     * @function postEditHouse
+     * @description 修改房源
+     * @param {Object} data 新的房源信息
+     */
+    postEditHouse: async (data: Object): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/house/edit`
+        const res: any = await Network.fetchPost(reqUrl, null, data);
+        if (res.status === 200) {
+            console.log('House update Api', res)
+            return res.json();
+        } else {
+            return Promise.reject(res);
         }
     },
 }

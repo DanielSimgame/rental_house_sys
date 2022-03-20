@@ -14,9 +14,7 @@
     </div>
     <div class="container mx-auto">
       <section class="landlord__wrap py-5">
-        <div class="top-title-text text-4xl my-10 pl-4 md:pl-2 relative">
-          <h1>房屋出租 成为业主</h1>
-        </div>
+        <TopTitleVue text="房屋出租 成为业主" />
         <div class="advances__wrap grid grid-cols-3 gap-4 px-4">
           <AdvanceInfoCardVue v-for="(item, index) in advances" :key="index" :infoObj="item" />
         </div>
@@ -57,9 +55,13 @@
 <script setup>
 import HouseSearchInputVue from '@/components/HouseSearchInput.vue';
 import AdvanceInfoCardVue from '@/components/AdvanceInfoCard.vue';
+import TopTitleVue from '@/components/TopTitle.vue';
+import { useRouter } from 'vue-router';
 import imgFlash from '@/assets/images/flash.png';
 import imgDiamond from '@/assets/images/diamond.png';
 import imgMoney from '@/assets/images/money.png';
+
+const router = useRouter()
 
 const advances = [
   {
@@ -87,7 +89,7 @@ const advances = [
  * @description 点击发布房源按钮
  */
 const onNewHouseClick = () => {
-  console.log('onNewHouseClick');
+  router.push('/house/new')
 }
 
 </script>

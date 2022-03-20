@@ -6,12 +6,8 @@ export default {
      */
     getEncode64(str) {
         return window.btoa(
-            encodeURIComponent(str)
-                .replace(/%([0-9A-F]{2})/g,
-                    function toSolidBytes(match, p1) {
-                        return String.fromCharCode('0x' + p1);
-                    }
-                )
+            // 双层包裹
+            encodeURI(encodeURI(str))
         );
     },
     /**
@@ -20,11 +16,9 @@ export default {
      * @returns {String} decoded string
      */
     getDecode64(str) {
-        return decodeURIComponent(
-            window.atob(str)
-                .split('')
-                .map(function (c) {
-                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-                }).join(''));
+        console.log(str)
+        return decodeURI(
+            decodeURI(window.atob(str))
+        )
     },
 }

@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue-demi';
+import { onMounted, reactive, ref, watch } from 'vue';
 import houseImg from '@/assets/images/roomPic.jpg'
 import UserCard from './UserCard.vue';
 
