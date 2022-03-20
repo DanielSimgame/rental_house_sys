@@ -159,7 +159,7 @@
         <div
           class="room-list__item flex flex-col justify-between items-center overflow-hidden relative group h-full w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
         >
-          <span class="my-5">点击新增一个房间</span>
+          <span class="my-5 text-xl">点击新增一个房间</span>
           <span class="text-6xl">+</span>
         </div>
       </el-button>
@@ -409,11 +409,11 @@ onMounted(() => {
 }
 
 .room-list__item-del-wrap {
-  border-bottom-left-radius: 100%;
+  border-bottom-left-radius: 40%;
 }
 
 .room-list__item-del {
-  transform: translate(10px, -1px);
+  transform: translate(8px, -1px);
   color: #fff;
 }
 </style>
