@@ -19,6 +19,7 @@ const Query = () => import('@/views/query/index.vue')
 const Admin = () => import('@/views/admin/Layout.vue')
 const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
 const AdminSettings = () => import('@/views/admin/Settings.vue')
+const AdminUsers = () => import('@/views/admin/Users.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
@@ -70,6 +71,15 @@ const routes: Array<RouteRecordRaw> = [
         component: AdminDashboard,
         meta: {
           title: "管理面板",
+          roles: ["admin"]
+        }
+      },
+      {
+        path: "/admin/users",
+        name: "AdminUsers",
+        component: AdminUsers,
+        meta: {
+          title: "用户管理",
           roles: ["admin"]
         }
       },

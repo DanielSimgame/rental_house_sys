@@ -65,18 +65,5 @@ onMounted(() => {
 .container {
   width: 1200px;
 }
-.top-title-text {
-  font-weight: bold;
-  font-style: italic;
-}
-.top-title-text::before {
-  content: "";
-  position: absolute;
-  width: 5px;
-  height: 100%;
-  background-color: var(--el-color-primary);
-  top: 0;
-  left: 0;
-  transform: skewX(-18deg);
-}
+
 </style>

@@ -11,28 +11,30 @@
                 <el-icon>
                     <checked />
                 </el-icon>
-                <span>管理面板</span>
+                <span>数据总览</span>
             </el-menu-item>
         </router-link>
-        <router-link to="/admin/settings">
+        <router-link to="/admin/users">
             <el-menu-item index="DataManage">
                 <el-icon>
                     <document />
                 </el-icon>
-                <span>数据管理</span>
+                <span>用户管理</span>
             </el-menu-item>
         </router-link>
-        <el-menu-item index="Settings" disabled>
-            <el-icon>
-                <setting />
-            </el-icon>
-            <span>后台设置(暂不开放)</span>
-        </el-menu-item>
+        <router-link to="/admin/settings">
+            <el-menu-item index="Settings" disabled>
+                <el-icon>
+                    <setting />
+                </el-icon>
+                <span>后台设置(暂不开放)</span>
+            </el-menu-item>
+        </router-link>
     </el-menu>
 </template>
 
 <script setup>
-import { Checked, Document, Setting} from "@element-plus/icons-vue";
+import { Checked, Document, Setting } from "@element-plus/icons-vue";
 import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
 const route = useRoute();

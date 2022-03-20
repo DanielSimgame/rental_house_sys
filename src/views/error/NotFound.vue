@@ -9,9 +9,20 @@
         <p>Not Found</p>
       </h1>
       <div class="error-func">
-        <el-button size="large" @click="$router.back()">返回上一页</el-button>
-        <el-button type="primary" size="large" @click="$router.push('/')">返回首页</el-button>
+        <el-button size="large" @click="router.back()">返回上一页</el-button>
+        <el-button type="primary" size="large" @click="backToMain()">返回首页</el-button>
       </div>
     </div>
   </header>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const backToMain = () => {
+  router.push('/')
+};
+
+</script>

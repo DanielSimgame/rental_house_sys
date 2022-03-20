@@ -9,7 +9,7 @@ export default {
      * */
     postLogin: async (data: Object) => {
         const reqUrl = `${store.getters.getApiServer}/user/login`
-        const res: any= await Network.fetchPost(reqUrl, null, data);
+        const res: any = await Network.fetchPost(reqUrl, null, data);
         if (res.status === 200) {
             return res.json();
         } else {
@@ -109,5 +109,41 @@ export default {
         } else {
             return Promise.reject(res);
         }
-    }
+    },
+    /**
+     * @function getAddAdmin
+     * @description 添加管理员
+     * @param {String} userId 用户id
+     */
+    getAddAdmin: async (userId: string = ''): Promise<Object> => {
+        if (userId === '') {
+            return Promise.reject('userId不能为空')
+        } else {
+            const reqUrl = `${store.getters.getApiServer}/user/grant?userId=${userId}`
+            const res: any = await Network.fetchGet(reqUrl);
+            if (res.status === 200) {
+                return res;
+            } else {
+                return Promise.reject(res);
+            }
+        }
+    },
+        /**
+     * @function getDelAdmin
+     * @description 删除管理员
+     * @param {String} userId 用户id
+     */
+    getDelAdmin: async (userId: string = ''): Promise<Object> => {
+        if (userId === '') {
+            return Promise.reject('userId不能为空')
+        } else {
+            const reqUrl = `${store.getters.getApiServer}/user/deleteAdmin?userId=${userId}`
+            const res: any = await Network.fetchGet(reqUrl);
+            if (res.status === 200) {
+                return res.data;
+            } else {
+                return Promise.reject(res);
+            }
+        }
+    },
 }
