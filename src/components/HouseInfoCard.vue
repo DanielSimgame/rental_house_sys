@@ -1,8 +1,9 @@
 <template>
   <div
-    class="house-info-card group bg-white border-slate-200 hover:border-indigo-600 border-2 hover:bg-indigo-600 rounded-xl p-5 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
+    class="house-info-card group sm:w-80 md:w-80 lg:w-96 xl:w-96 2xl:w-96 bg-white border-slate-200 hover:border-indigo-600 border-2 
+    hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
   >
-    <img class="mb-2 rounded-xl" :src="imgUrl" width="368" height="270" alt />
+    <img class="mb-2 rounded-xl md:w-80 lg:w-96 xl:w-96 2xl:w-96" :src="imgUrl" alt />
     <span class="house-info__name">
       <strong>{{ houseInfo.title }}</strong>
     </span>
@@ -187,7 +188,7 @@ watch(() => props.houseInfo, (val) => {
 
 <style>
 .house-info-card {
-  width: 380px;
+  /* width: 380px; */
   min-height: 430px;
   display: inline-block;
   box-sizing: border-box;

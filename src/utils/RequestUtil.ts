@@ -1,5 +1,6 @@
 import Network from "./basic/Network";
 import store from "@/store";
+import User from "./User";
 
 export default {
     /**
@@ -120,9 +121,12 @@ export default {
             return Promise.reject('userId不能为空')
         } else {
             const reqUrl = `${store.getters.getApiServer}/user/grant?userId=${userId}`
-            const res: any = await Network.fetchGet(reqUrl);
+            const res: any = await Network.fetchGet(reqUrl, {token: User.getToken()});
             if (res.status === 200) {
-                return res;
+                return {
+                    success: true,
+                    message: '添加管理员成功'
+                };
             } else {
                 return Promise.reject(res);
             }
@@ -138,9 +142,12 @@ export default {
             return Promise.reject('userId不能为空')
         } else {
             const reqUrl = `${store.getters.getApiServer}/user/deleteAdmin?userId=${userId}`
-            const res: any = await Network.fetchGet(reqUrl);
+            const res: any = await Network.fetchGet(reqUrl, {token: User.getToken()});
             if (res.status === 200) {
-                return res.data;
+                return {
+                    success: true,
+                    message: '删除管理员成功'
+                };
             } else {
                 return Promise.reject(res);
             }

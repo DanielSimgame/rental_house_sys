@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto px-4 py-4">
-    <h1 class="top-title-text text-4xl my-5 pl-4 relative">
+    <h1 class="top-title-text text-4xl my-5 pl-4 md:pl-2 relative">
       <!-- <span>{{ keyword[0] }}</span> -->
       <span>{{ keyword[1] }}</span>
       <span>{{ keyword[2] }}</span>
@@ -9,8 +9,8 @@
     <div class="search-container my-5">
       <HouseSearchInputVue direction="horizontal" />
     </div>
-    <div class="house-list-container grid grid-cols-3 gap-4" v-if="!isEmptyList">
-      <HouseInfoCardVue v-for="(item) in resultArr.value" :key="item.id" :house-info="item" />
+    <div class="house-list-container grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-col-3 gap-3" v-if="!isEmptyList">
+      <HouseInfoCardVue class="sm:mx-auto" v-for="(item) in resultArr.value" :key="item.id" :house-info="item" />
       <!-- <HouseInfoCardVue :house-info="resultArr[0]" /> -->
     </div>
     <div class="house-list-container flex flex-col justify-center items-center py-16" v-else>

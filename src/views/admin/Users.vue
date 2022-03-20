@@ -4,7 +4,7 @@
         <span>用户管理</span>
     </h1>
     <div class="func-container flex flex-col w-full">
-        <div class="admins__manage grid grid-cols-4 gap-10 px-10 py-5">
+        <div class="admins__manage grid grid-cols-4 lg:grid-cols-4 md:grid-cols-2 gap-10 px-10 py-5">
             <div class="admins__grant-wrap col-span-2">
                 <span class="text-lg font-bold">用户提权</span>
                 <div class="flex flex-row justify-center items-center">
@@ -17,16 +17,15 @@
                     ></el-input>
                     <el-popover :visible="popupAddAdmin" placement="bottom" width="200">
                         <span>
-                            <p>在进行管理员提权/降权操作时需要<strong class="text-red-500">十分谨慎</strong>，</p>
+                            <p>
+                                在进行管理员提权/降权操作时需要
+                                <strong class="text-red-500">十分谨慎</strong>，
+                            </p>
                             <p class="mt-1">请检查输入的用户id，并确认是否添加管理员！</p>
                         </span>
                         <div class="popover-btns text-right mx-0 mt-5">
                             <el-button size="small" type="primary" @click="popupAddAdmin = false">取消</el-button>
-                            <el-button
-                                type="text"
-                                size="small"
-                                @click="onBtnAddAdminClick"
-                            >确认添加</el-button>
+                            <el-button type="text" size="small" @click="onBtnAddAdminClick">确认添加</el-button>
                         </div>
                         <template #reference>
                             <el-button
@@ -51,16 +50,15 @@
                     ></el-input>
                     <el-popover :visible="popupDelAdmin" placement="bottom" width="200">
                         <span>
-                            <p>在进行管理员提权/降权操作时需要<strong class="text-red-500">十分谨慎</strong>，</p>
+                            <p>
+                                在进行管理员提权/降权操作时需要
+                                <strong class="text-red-500">十分谨慎</strong>，
+                            </p>
                             <p class="mt-1">请检查输入的用户id，并确认是否添加管理员！</p>
                         </span>
                         <div class="popover-btns text-right mx-0 mt-5">
                             <el-button size="small" type="primary" @click="popupDelAdmin = false">取消</el-button>
-                            <el-button
-                                type="text"
-                                size="small"
-                                @click="onBtnDelAdminClick"
-                            >确认添加</el-button>
+                            <el-button type="text" size="small" @click="onBtnDelAdminClick">确认添加</el-button>
                         </div>
                         <template #reference>
                             <el-button
@@ -68,7 +66,7 @@
                                 type="danger"
                                 size="large"
                                 @click="popupDelAdmin = true"
-                            >提权</el-button>
+                            >降权</el-button>
                         </template>
                     </el-popover>
                 </div>
@@ -96,19 +94,22 @@ let popupDelAdmin = ref(false);
  */
 const onBtnAddAdminClick = async () => {
     btnAddLoading.value = true;
-    console.log(
-        await RequestUtil.getAddAdmin(inputAddAdmin.value)
-            .then(res => {
-                console.log(res)
-            })
-            .catch(err => {
-                NotificationUtil.Notify(err.toString(), { type: msgType.ERROR, title: '错误' })
-            })
-            .finally(() => {
-                btnAddLoading.value = false;
-                popupAddAdmin.value = false;
-            })
-    )
+
+    await RequestUtil.getAddAdmin(inputAddAdmin.value)
+        .then(res => {
+            if (res.success) {
+                NotificationUtil.Notify('添加管理员成功！', {type: msgType.SUCCESS});
+                inputAddAdmin.value = '';
+            }
+        })
+        .catch(err => {
+            NotificationUtil.Notify(err.toString(), { type: msgType.ERROR, title: '错误' })
+        })
+        .finally(() => {
+            btnAddLoading.value = false;
+            popupAddAdmin.value = false;
+        })
+
     // await RequestUtil.getAddAdmin()
 }
 
@@ -119,19 +120,22 @@ const onBtnAddAdminClick = async () => {
  */
 const onBtnDelAdminClick = async () => {
     btnDelLoading.value = true;
-    console.log(
-        await RequestUtil.getDelAdmin(inputDelAdmin.value)
-            .then(res => {
-                console.log(res)
-            })
-            .catch(err => {
-                NotificationUtil.Notify(err.toString(), { type: msgType.ERROR, title: '错误' })
-            })
-            .finally(() => {
-                btnDelLoading.value = false;
-                popupDelAdmin.value = false;
-            })
-    )
+
+    await RequestUtil.getDelAdmin(inputDelAdmin.value)
+        .then(res => {
+            if (res.success) {
+                NotificationUtil.Notify('删除管理员成功！', {type: msgType.SUCCESS});
+                inputDelAdmin.value = '';
+            }
+        })
+        .catch(err => {
+            NotificationUtil.Notify(err.toString(), { type: msgType.ERROR, title: '错误' })
+        })
+        .finally(() => {
+            btnDelLoading.value = false;
+            popupDelAdmin.value = false;
+        })
+
 }
 </script>
 
