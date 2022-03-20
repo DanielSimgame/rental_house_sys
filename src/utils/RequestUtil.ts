@@ -8,7 +8,7 @@ export default {
      * @description 发送登录请求
      * @param {Object} data 登录信息
      * */
-    postLogin: async (data: Object) => {
+    postLogunin: async (data: Object) => {
         const reqUrl = `${store.getters.getApiServer}/user/login`
         const res: any = await Network.fetchPost(reqUrl, null, data);
         if (res.status === 200) {
