@@ -15,6 +15,7 @@ const Login = () => import('@/views/user/Login.vue')
 const SignUp = () => import('@/views/user/SignUp.vue')
 const Query = () => import('@/views/query/index.vue')
 const NewHouse = () => import('@/views/house/NewHouse.vue')
+const HouseDetail = () => import('@/views/house/HouseDetail.vue')
 
 // 管理面板与次级路由
 const Admin = () => import('@/views/admin/Layout.vue')
@@ -63,6 +64,15 @@ const routes: Array<RouteRecordRaw> = [
     component: NewHouse,
     meta: {
       title: "发布房源",
+      roles: ["admin", "user"],
+    }
+  },
+  {
+    path: "/house/detail",
+    name: "HouseDetail",
+    component: HouseDetail,
+    meta: {
+      title: "房源详情",
       roles: ["admin", "user"],
     }
   },
