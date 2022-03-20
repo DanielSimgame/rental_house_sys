@@ -409,11 +409,11 @@ onMounted(() => {
 }
 
 .room-list__item-del-wrap {
-  border-bottom-left-radius: 100%;
+  border-bottom-left-radius: 40%;
 }
 
 .room-list__item-del {
-  transform: translate(10px, -1px);
+  transform: translate(8px, -1px);
   color: #fff;
 }
 </style>
