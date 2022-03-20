@@ -117,6 +117,20 @@ export default {
         }
     },
     /**
+     * @function getSingleHouse
+     * @description 获取单个房源信息
+     * @param houseId 房源id
+     */
+    getSingleHouse: async (houseId: number): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/house/single?houseId=${houseId}`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            return res.json();
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
      * @function getAddAdmin
      * @description 添加管理员
      * @param {String} userId 用户id
@@ -167,8 +181,7 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/house/create`
         const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
         if (res.status === 200) {
-            console.log('House created', res)
-            return res;
+            return res.json();
         } else {
             return Promise.reject(res);
         }

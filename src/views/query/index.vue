@@ -31,7 +31,8 @@
       v-if="!isEmptyList"
     >
       <HouseInfoCardVue
-        class="sm:mx-auto"
+        class="sm:mx-auto cursor-pointer"
+        @click="onHouseClick(item.id)"
         v-for="(item) in resultArr.value"
         :key="item.id"
         :house-info="item"
@@ -80,14 +81,27 @@ for (let i = 0; i < params.length; i++) {
   keyword.push(params[i])
 }
 
+/**
+ * @function onNewHouseClick
+ * @description 点击发布房源按钮
+ */
 const onNewHouseClick = () => {
-
   router.push({
     name: "NewHouse",
+  })
+}
+
+/**
+ * @function onHouseClick
+ * @param {string} id
+ * @description 点击房源后跳转到详情页
+ * @todo 将id传递到详情页
+ */
+const onHouseClick = id => {
+  router.push({
+    name: "HouseDetail",
     query: {
-      province: keyword[0],
-      city: keyword[1],
-      district: keyword[2]
+      id: id
     }
   })
 }

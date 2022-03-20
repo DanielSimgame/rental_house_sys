@@ -26,6 +26,7 @@ import RequestUtil from "./utils/RequestUtil";
 
 import HzfHeader from './components/HzfHeader.vue';
 import Notification, { msgType } from "./utils/NotificationUtil";
+import router from "./router";
 
 // const title = ref('nmsl');
 
@@ -36,7 +37,7 @@ import Notification, { msgType } from "./utils/NotificationUtil";
 const initPage = async () => {
 
   // 以下代码导致无限403bug
-  
+
   // 先将本地session中的信息写入store，再从后端获取用户信息并覆盖
   // const localUserInfo = User.getUserInfoInSession();
   // if (localUserInfo) {
@@ -57,11 +58,16 @@ const initPage = async () => {
       })
       .catch(e => {
         // console.log(e)
-        Notification.Notify('连接服务器失败，无法获取用户信息', {
+        Notification.Notify('连接服务器失败，无法获取用户信息，请重新登录账号。', {
           type: msgType.ERROR,
           title: '出错',
           duration: 3000
         })
+        store.commit("clearUserInfo");
+        User.delToken();
+        User.delUserInfoInSession();
+        router.push("/login");
+        window.location.reload();
       })
   }
 };

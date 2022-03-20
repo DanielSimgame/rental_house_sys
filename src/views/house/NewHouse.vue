@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto py-10">
+  <div class="container xl:w-full mx-auto py-10">
     <div class="w-full grid grid-cols-5">
       <TopTitle class="col-span-4" text="房源信息" />
       <div class="landlore__btn col-span-1 flex flex-col justify-center items-center">
@@ -386,6 +386,12 @@ const onSubmit = () => {
       NotificationUtil.Notify('发布成功', {
         type: msgType.SUCCESS,
         title: '提示'
+      })
+      router.push({
+        name: 'HouseDetail',
+        params: {
+          id: res.id
+        }
       })
       // console.log(res)
     })
