@@ -1,13 +1,19 @@
 <template>
   <el-affix class="shadow-md" offset-top="0">
     <div class="bg-white grid grid-cols-12">
-      <div class="logo-container my-auto px-5 group 2xl:col-span-1 xl:col-span-1 lg:col-span-2 md:col-span-2 sm:col-span-2">
+      <div
+        class="logo-container my-auto px-5 group 2xl:col-span-1 xl:col-span-1 lg:col-span-2 md:col-span-2 sm:col-span-2"
+      >
         <router-link to="/" class="relative">
           <img class="logo w-16 h-16 top-0.5 translate-y-4 z-30" :src="logoImg" alt="合租系统Logo" />
-          <div class="logo-tip w-fit lg:w-16 pl-2 pr-3 z-20 -translate-y-6 group-hover:translate-x-16 opacity-0 group-hover:opacity-100 transition-all ease-in-out font-bold text-md">首页</div>
+          <div
+            class="logo-tip w-fit lg:w-16 pl-2 pr-3 z-20 -translate-y-6 group-hover:translate-x-16 opacity-0 group-hover:opacity-100 transition-all ease-in-out font-bold text-md"
+          >首页</div>
         </router-link>
       </div>
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 2xl:col-span-8 xl:col-span-7 lg:col-span-5 md:col-span-4 sm:col-span-4">
+      <div
+        class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 2xl:col-span-8 xl:col-span-7 lg:col-span-5 md:col-span-4 sm:col-span-4"
+      >
         <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
       </div>
       <div
@@ -33,7 +39,7 @@
         </div>
         <div class="w-full flex flex-row justify-around items-center" v-else>
           <span>用户</span>
-          <el-button type="primary" class="2xl:w-fit">成为业主</el-button>
+          <el-button type="primary" class="2xl:w-fit" @click="onNewHouseClick">成为业主</el-button>
         </div>
         <div class="flex flex-col justify-center items-center">
           <el-button @click="onLogoutClick" plain>退出</el-button>
@@ -86,6 +92,7 @@ export default {
     const onLogoutClick = () => {
       store.commit("clearUserInfo");
       User.delToken();
+      User.delUserInfoInSession();
       NotificationUtil.Notify("退出登录成功", { type: "success", title: "退出登录" });
       router.push("/login");
       window.location.reload();
@@ -104,12 +111,20 @@ export default {
     const onUserCardClick = () => {
       router.push("/user")
     };
+    /**
+     * @function onNewHouseClick
+     * @description 点击添加房源
+     */
+    const onNewHouseClick = () => {
+      router.push("/house/new")
+    }
     return {
       logoImg,
       userInfo,
       onLogoutClick,
       onAdminLinkClick,
       onUserCardClick,
+      onNewHouseClick
     };
   },
   components: { UserCard }

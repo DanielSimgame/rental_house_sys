@@ -29,17 +29,21 @@
 import NotificationUtil from '@/utils/NotificationUtil';
 import RequestUtil from '@/utils/RequestUtil';
 import { goSearch } from '@/utils/RouterUtil';
-import { onMounted, reactive, ref } from 'vue-demi';
+import { onMounted, reactive, ref } from 'vue';
 
 defineProps({
   direction: {
     type: String,
     default: 'vertical',
   },
+  showBtn: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 let cascader = ref(null)
-let selectedCity = ref([])
+let selectedCity = ref(null)
 let provinces = ref([{}]) // 这个数据是组件初始化created异步加载的数据，里面加空对象是为了el-cascader初始化没有数据报错 data=null这个原因
 let addressArr = [] // 绑定的数据
 let is_cascader = Math.random() // 重新渲染标识key
@@ -48,8 +52,9 @@ let addressProps = reactive({
   value: 'id',
   lazy: true,
   lazyLoad(node, resolve) {
-    const { value, level } = node
-    RequestUtil.getDistricts(value)
+    const { label, level } = node
+    console.log(label, level)
+    RequestUtil.getDistricts(label)
       .then(res => {
         if (level === 2) {
           resolve(
@@ -69,7 +74,7 @@ let addressProps = reactive({
  * @function initDistricts 初始化省市区数据
  */
 const initDistricts = async () => {
-  await RequestUtil.getDistricts('0')
+  await RequestUtil.getDistricts('')
     .then(res => {
       provinces.value = res
     });
@@ -87,6 +92,11 @@ const handleCityChange = (selectedOptions) => {
 
   // console.log(cascader.value.getCheckedNodes()[0].pathLabels) // 获取已选项的label
   selectedCity.value = cascader.value.getCheckedNodes()[0].pathLabels
+  //   selectedCity.value = [
+  //   cascader.value.getCheckedNodes()[0].pathNodes[0].data,
+  //   cascader.value.getCheckedNodes()[0].pathNodes[1].data,
+  //   cascader.value.getCheckedNodes()[0].pathNodes[2].data
+  // ]
 }
 
 /**
@@ -94,6 +104,7 @@ const handleCityChange = (selectedOptions) => {
  * @description 点击查询按钮
  */
 const onSearchClick = () => {
+  // console.log(selectedCity.value, cascader.value.getCheckedNodes())
   if (cascader.value.getCheckedNodes().length !== 0) {
     goSearch(JSON.stringify(selectedCity.value))
   } else {

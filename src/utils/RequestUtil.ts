@@ -78,10 +78,15 @@ export default {
     /**
      * @function getDistricts
      * @description 获取所有的区域信息，返回值为对象数组
-     * @param {String} parentId 父节点id
+     * @param {String} parentName 父节点名称
      */
-    getDistricts: async (parentId: string): Promise<Object> => {
-        const reqUrl = `${store.getters.getApiServer}/areaInfo/list?parentId=${parentId}`
+    getDistricts: async (parentName: string): Promise<Object> => {
+        let reqUrl: string;
+        if (parentName === "" || undefined || null) {
+            reqUrl = `${store.getters.getApiServer}/areaInfo/list`
+        } else {
+            reqUrl = `${store.getters.getApiServer}/areaInfo/list?parentName=${parentName}`
+        }
         const res: any = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
             return res.json();
@@ -160,10 +165,10 @@ export default {
      */
     postCreateHouse: async (data: Object): Promise<Object> => {
         const reqUrl = `${store.getters.getApiServer}/house/create`
-        const res: any = await Network.fetchPost(reqUrl, null, data);
+        const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
         if (res.status === 200) {
-            console.log('House create Api', res)
-            return res.json();
+            console.log('House created', res)
+            return res;
         } else {
             return Promise.reject(res);
         }
@@ -178,7 +183,7 @@ export default {
         const res: any = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
             console.log('House delete Api', res)
-            return res.json();
+            return res;
         } else {
             return Promise.reject(res);
         }
@@ -193,7 +198,7 @@ export default {
         const res: any = await Network.fetchPost(reqUrl, null, data);
         if (res.status === 200) {
             console.log('House update Api', res)
-            return res.json();
+            return res;
         } else {
             return Promise.reject(res);
         }

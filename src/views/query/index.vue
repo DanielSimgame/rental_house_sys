@@ -81,20 +81,13 @@ for (let i = 0; i < params.length; i++) {
 }
 
 const onNewHouseClick = () => {
-  const locationObj = {
-    province: keyword[0].toString(),
-    city: keyword[1].toString(),
-    district: keyword[2].toString()
-  }
-
-  console.log(locationObj)
-  const keywordStr = Crypto.getEncode64(JSON.stringify(locationObj))
-  console.log(keywordStr)
 
   router.push({
     name: "NewHouse",
     query: {
-      keyword: keywordStr
+      province: keyword[0],
+      city: keyword[1],
+      district: keyword[2]
     }
   })
 }

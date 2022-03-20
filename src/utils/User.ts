@@ -25,5 +25,8 @@ export default {
             return JSON.parse(Crypto.getDecode64(base64));
         }
         return null;
+    },
+    delUserInfoInSession: () => {
+        Storage.remove("userInfo");
     }
 }

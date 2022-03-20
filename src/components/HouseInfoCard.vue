@@ -157,6 +157,7 @@ onMounted(() => {
 const setTagChinese = () => {
   // 如果houseInfo.allocation中的属性为真值，则设置labels中对应对象的enable属性为真值
   for (let key in props.houseInfo.allocation) {
+    // console.log(key)
     // props.houseInfo.allocation[key] ? labels[key].enable = true : false
     if (props.houseInfo.allocation[key]) {
       labels[key].enable = true
