@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto p-5">
-        <div class="house-detail__top grid grid-cols-3 p-5 mb-5 border rounded-xl">
+        <div class="house-detail__top shadow-xl grid grid-cols-3 p-5 mb-5 border rounded-xl">
             <div class="house-detail__top-item col-span-2 row-span-3 mr-5">
                 <img class="w-full object-cover rounded-xl" :src="roomPic" alt />
             </div>
@@ -90,7 +90,7 @@
                             v-for="(item4) in roomList"
                             :key="item4.roomId"
                         >
-                            <div v-if="item4.tenement !== null">
+                            <div v-if="item4.tenement !== null" class="flex flex-col items-center">
                                 <span>室友{{ item4.roomId }}</span>
                                 <span>{{ item4.tenement.gender }}</span>
                             </div>
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center mb-5">
+                <div class="flex items-center">
                     <span class="text-gray-400 w-16">租用</span>
                     <div class="house-detail__roommates w-full grid grid-cols-3">
                         <div
@@ -119,9 +119,11 @@
                     <el-link
                         :underline="false"
                         @click="onJoinRentClick"
+                        :disabled="!roomAvailable"
                         class="query-btn inline-flex mt-5 w-full h-20 px-5 py-3 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
                     >
-                        <span class="text-2xl">加入合租</span>
+                        <span class="text-2xl" v-if="roomAvailable">加入合租</span>
+                        <span class="text-2xl" v-else>此房源已满</span>
                     </el-link>
                 </div>
             </div>
@@ -130,7 +132,7 @@
         <div class>
             <span class="text-2xl">房源简介</span>
             <p class="text-gray-600 text-sm">编号：{{ id }}</p>
-            <p class="my-5">{{ roomBrief }}</p>
+            <p class="my-5">{{ roomDesc }}</p>
         </div>
     </div>
 </template>
@@ -150,7 +152,7 @@ const router = useRouter()
 let id = ref(route.query.id)
 let houseInfo = reactive({})
 let houseLocation = ref('')
-let roomBrief = ref('')
+let roomDesc = ref('')
 let roomPrice = ref('')
 let roomTitle = ref('')
 let roomAddress = ref({})
@@ -159,6 +161,7 @@ let roomAllocation = ref({})
 let roomList = ref({})
 
 let rentRoomId = ref(1)
+let roomAvailable = ref(true)
 
 let labels = reactive({
     airConditioner: {
@@ -214,9 +217,10 @@ let labels = reactive({
 
 RequestUtil.getSingleHouse(id.value)
     .then(res => {
+        console.log(res)
         houseInfo.value = res
         houseLocation.value = houseInfo.value.address.province + houseInfo.value.address.city + houseInfo.value.address.cityProper + houseInfo.value.address.street
-        roomBrief.value = `这套位于${houseInfo.value.address.street}的房源属于抢手房源。共有21栋楼。在小区内可以看到全天执勤的安保人员。
+        roomDesc.value = houseInfo.value.description ? houseInfo.value.description : `这套位于${houseInfo.value.address.street}的房源属于抢手房源。共有21栋楼。在小区内可以看到全天执勤的安保人员。
         有出租车位。该小区共有4个出入口。房源所在楼栋距离地铁站站比较近。小区配套成熟，有健身广场，
         篮球场，网球场，饮水站，快递柜，花园。楼栋概况 小区是2017年建的，楼栋外立面较新。单元无门禁。
         楼栋总高45层。3梯4户，楼道安静不嘈杂，上下班高峰期不用等电梯。楼道卫生由小区负责，有专人清扫。
@@ -231,6 +235,10 @@ RequestUtil.getSingleHouse(id.value)
         roomAllocation.value = houseInfo.value.allocation
         // 只展示前三个房源
         roomList.value = houseInfo.value.roomList.slice(0, 3)
+        if(roomList.value[0].tenement && roomList.value[1].tenement && roomList.value[2].tenement) {
+            // 满人了
+            roomAvailable.value = false
+        }
         console.log(houseInfo)
     })
 
