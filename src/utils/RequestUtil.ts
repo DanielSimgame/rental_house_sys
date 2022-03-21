@@ -8,7 +8,7 @@ export default {
      * @description 发送登录请求
      * @param {Object} data 登录信息
      * */
-    postLogunin: async (data: Object) => {
+    postLogin: async (data: Object) => {
         const reqUrl = `${store.getters.getApiServer}/user/login`
         const res: any = await Network.fetchPost(reqUrl, null, data);
         if (res.status === 200) {
@@ -193,7 +193,7 @@ export default {
      */
     getDeleteHouse: async (houseId: String): Promise<Object> => {
         const reqUrl = `${store.getters.getApiServer}/house/delete?houseId=${houseId}`
-        const res: any = await Network.fetchGet(reqUrl);
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
             console.log('House delete Api', res)
             return res;
@@ -211,6 +211,22 @@ export default {
         const res: any = await Network.fetchPost(reqUrl, null, data);
         if (res.status === 200) {
             console.log('House update Api', res)
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+    * @function getJoinRentHouse
+    * @description 加入合租
+    * @param {String} houseId 房产id
+    * @param {Number} roomId 房间id
+    */
+    getJoinRentHouse: async (houseId: String, roomId: Number): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/house/rent?houseId=${houseId}&roomId=${roomId}`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            console.log('House rent Api', res)
             return res;
         } else {
             return Promise.reject(res);

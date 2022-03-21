@@ -55,6 +55,7 @@ const initPage = async () => {
         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
         store.commit('setUserInfo', r)
         User.setUserInfoInSession(r)
+        console.log(r)
       })
       .catch(e => {
         // console.log(e)

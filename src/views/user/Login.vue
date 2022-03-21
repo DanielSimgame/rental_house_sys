@@ -134,6 +134,8 @@ const onLoginClick = async () => {
     })
     .catch(err => {
       console.log(err)
+      loading.value = false
+      NotificationUtil.Notify('登录失败！', { title: '错误', type: msgType.ERROR})
     })
 }
 

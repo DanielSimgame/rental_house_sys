@@ -64,6 +64,10 @@
                         placeholder="请输入邮箱"
                     ></el-input>
                 </el-form-item>
+                <el-form-item label="性别">
+                    <el-radio v-model="signupForm.gender" label="女">女</el-radio>
+                    <el-radio v-model="signupForm.gender" label="男">男</el-radio>
+                </el-form-item>
             </el-form>
         </div>
         <div
@@ -98,10 +102,11 @@ import User from '@/utils/User';
 import NotificationUtil from '@/utils/NotificationUtil';
 import { goHome } from '@/utils/RouterUtil';
 
-// 登陆表单
+// 注册表单
 let signupForm = reactive({
     email: "",
     name: "",
+    gender: "",
     password: "",
     phone: "",
     portrait: "",
