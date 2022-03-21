@@ -99,7 +99,7 @@ import { onMounted, reactive, ref } from 'vue';
 import store from '@/store';
 import RequestUtil from '@/utils/RequestUtil';
 import User from '@/utils/User';
-import NotificationUtil from '@/utils/NotificationUtil';
+import NotificationUtil, { msgType } from '@/utils/NotificationUtil';
 import { goHome } from '@/utils/RouterUtil';
 
 // 注册表单
