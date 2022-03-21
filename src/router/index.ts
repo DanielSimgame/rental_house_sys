@@ -23,6 +23,12 @@ const AdminDashboard = () => import('@/views/admin/Dashboard.vue')
 const AdminSettings = () => import('@/views/admin/Settings.vue')
 const AdminUsers = () => import('@/views/admin/Users.vue')
 
+// 用户个人中心与次级路由
+const UserPanel = () => import('@/views/user/index.vue')
+const UserRentIn = () => import('@/views/user/MyRentIn.vue')
+const UserRentOut = () => import('@/views/user/MyRentOut.vue')
+const UserInformation = () => import('@/views/user/MyInformation.vue')
+
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
 const redirectList = ['/login', '/register'] // 已登录重定向名单
@@ -112,6 +118,44 @@ const routes: Array<RouteRecordRaw> = [
           roles: ["admin"]
         }
       }
+    ]
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: UserPanel,
+    meta: {
+      title: "个人中心",
+      roles: ["admin", "user"]
+    },
+    children: [
+      {
+        path: "/user/information",
+        name: "UserInformation",
+        component: UserInformation,
+        meta: {
+          title: "个人中心",
+          roles: ["admin", "user"]
+        },
+      },
+      {
+        path: "/user/rentin",
+        name: "UserRentIn",
+        component: UserRentIn,
+        meta: {
+          title: "个人中心",
+          roles: ["admin", "user"]
+        },
+      },
+      {
+        path: "/user/rentout",
+        name: "UserRentOut",
+        component: UserRentOut,
+        meta: {
+          title: "个人中心",
+          roles: ["admin", "user"]
+        },
+      },
     ]
   },
   {

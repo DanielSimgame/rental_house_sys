@@ -1,5 +1,5 @@
 <template>
-  <div class="container xl:w-full mx-auto py-10">
+  <div class="container w-full mx-auto py-10">
     <div class="w-full grid grid-cols-5">
       <TopTitle class="col-span-4" text="房源信息" />
       <div class="landlore__btn col-span-1 flex flex-col justify-center items-center">
@@ -105,7 +105,7 @@
       class="room-list__wrap grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5"
     >
       <div
-        class="room-list__item overflow-hidden relative group w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
+        class="room-list__item mx-auto overflow-hidden relative group w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
         v-for="(item, index) in newHouseDTO.roomList"
         :key="index"
       >

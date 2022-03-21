@@ -36,10 +36,11 @@
           <el-tooltip content="点击进入管理面板">
             <el-link @click="onAdminLinkClick">管理员</el-link>
           </el-tooltip>
+          <el-button type="primary" class="2xl:w-fit" @click="onUserPageClick">个人中心</el-button>
         </div>
         <div class="w-full flex flex-row justify-around items-center" v-else>
           <span>用户</span>
-          <el-button type="primary" class="2xl:w-fit" @click="onNewHouseClick">成为业主</el-button>
+          <el-button type="primary" class="2xl:w-fit" @click="onUserPageClick">个人中心</el-button>
         </div>
         <div class="flex flex-col justify-center items-center">
           <el-button @click="onLogoutClick" plain>退出</el-button>
@@ -112,11 +113,11 @@ export default {
       router.push("/user")
     };
     /**
-     * @function onNewHouseClick
+     * @function onUserPageClick
      * @description 点击添加房源
      */
-    const onNewHouseClick = () => {
-      router.push("/house/new")
+    const onUserPageClick = () => {
+      router.push("/user")
     }
     return {
       logoImg,
@@ -124,7 +125,7 @@ export default {
       onLogoutClick,
       onAdminLinkClick,
       onUserCardClick,
-      onNewHouseClick
+      onUserPageClick
     };
   },
   components: { UserCard }

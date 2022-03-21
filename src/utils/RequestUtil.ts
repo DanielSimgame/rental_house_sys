@@ -232,4 +232,22 @@ export default {
             return Promise.reject(res);
         }
     },
+    /**
+    * @function getQuitRentHouse
+    * @description 加入合租
+    * @param {String} houseId 房产id
+    * @param {Number} roomId 房间id
+    */
+    getQuitRentHouse: async (houseId: String, roomId: Number): Promise<Object> => {
+        if ((houseId === '' || null || undefined) || (roomId === null || undefined )){
+            return Promise.reject('houseId或roomId不能为空')
+        }
+        const reqUrl = `${store.getters.getApiServer}/house/rent?houseId=${houseId}&roomId=${roomId}`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    },
 }

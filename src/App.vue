@@ -1,13 +1,13 @@
 <template>
   <div>
     <el-container>
-      <el-header style="height: auto; padding-left: 0; padding-right: 0;">
+      <el-header class="" style="height: auto; padding-left: 0; padding-right: 0;">
         <!-- <div class="bg-white shadow" v-if="$route.meta.title">
           <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
             <h1 class="text-3xl font-bold leading-tight text-gray-900">{{ $route.meta.title }}</h1>
           </div>
         </div>-->
-        <hzf-header></hzf-header>
+        <hzf-header ></hzf-header>
       </el-header>
       <el-main style="padding: 0">
         <router-view />
@@ -55,7 +55,7 @@ const initPage = async () => {
         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
         store.commit('setUserInfo', r)
         User.setUserInfoInSession(r)
-        console.log(r)
+        // console.log(r)
       })
       .catch(e => {
         // console.log(e)
