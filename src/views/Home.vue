@@ -23,7 +23,7 @@
             :underline="false"
             @click="onNewHouseClick"
             class="query-btn inline-flex mt-5 w-80 h-24 px-5 py-3 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
-          >getQuitRentHouse
+          >
             <span class="text-2xl">发布房源</span>
           </el-link>
         </div>
