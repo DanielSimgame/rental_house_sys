@@ -25,10 +25,10 @@ Tailwind UI所需第一方插件：
 - [tailwindcss/aspect-ratio](https://github.com/tailwindlabs/tailwindcss-aspect-ratio)
 
 ### 开始部署
-在Node.js 16.x版本下（使用Node.js 17.x版本会出现bug无法运行），可以使用[npm](https://www.npmjs.com/) 或者 [yarn](https://yarnpkg.com)安装依赖，并运行如下命令：
+在Node.js 16.x版本下(16.9与16.14.1均可运行)（使用Node.js 17.x版本会出现bug无法运行），可以使用[npm](https://www.npmjs.com/) 或者 [yarn](https://yarnpkg.com)安装依赖，并运行如下命令：
 ```sh
 yarn 
 yarn run dev
-#(或者 $npm run build)
-#(或者 $npm run serve)
+#(或者 $yarn run build)
+#(或者 $yarn run serve)
 ```

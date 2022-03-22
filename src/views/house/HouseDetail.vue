@@ -270,11 +270,11 @@ const onJoinRentClick = () => {
     RequestUtil.getJoinRentHouse(houseId, selectedRoomId)
         .then(res => {
             // console.log(res)
-            NotificationUtil.Notify('加入合租成功！正在返回首页。', { title: '成功', type: msgType.SUCCESS })
+            NotificationUtil.Notify('加入合租成功！正在前往个人中心。', { title: '成功', type: msgType.SUCCESS })
             setTimeout(() => {
-                clearTimeout(2000)
-                router.push('/')
-            }, 2000)
+                clearTimeout(1500)
+                router.push('/user/rentin')
+            }, 1500)
         })
         .catch(err => {
             // console.log(err)

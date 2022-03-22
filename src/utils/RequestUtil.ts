@@ -242,7 +242,7 @@ export default {
         if ((houseId === '' || null || undefined) || (roomId === null || undefined )){
             return Promise.reject('houseId或roomId不能为空')
         }
-        const reqUrl = `${store.getters.getApiServer}/house/rent?houseId=${houseId}&roomId=${roomId}`
+        const reqUrl = `${store.getters.getApiServer}/house/quit?houseId=${houseId}&roomId=${roomId}`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
             return res;

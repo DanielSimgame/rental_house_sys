@@ -98,7 +98,7 @@ export default {
      * @param {String | null} args.position 通知展示位置
      * @param {Number | null} args.offset 通知偏移量，默认为0，单位为px
      * @param {Number | null} args.duration 通知显示时间，默认为3000ms
-     * @param {Boolean} args.HTML 是否在message中使用html标签（！谨慎使用，可能会导致不可预见情况！）
+     * @param {Boolean | null} args.HTML 是否在message中使用html标签（！谨慎使用，可能会导致不可预见情况！）
      * */
     Notify(message, ...args) {
         ElNotification({

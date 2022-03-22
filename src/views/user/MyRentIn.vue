@@ -1,13 +1,13 @@
 <template>
   <div class="rent__wrap px-5">
-    <div class="w-full grid grid-cols-6">
+    <div class="w-full grid grid-cols-6 gap-5">
       <TopTitle class="col-span-5" text="我租到的房源"/>
-      <div class="flex flex-col justify-center items-center">
+      <div class="flex flex-col col-span-1 justify-center items-center">
         <el-popover :visible="popupQuitRent" placement="left" width="200" v-if="pageData.myRentHouse">
           <span>请问您是否确认要退出合租？</span>
           <div class="popover-btns text-right mx-0 mt-5">
             <el-button size="small" type="primary" @click="popupQuitRent = false">取消</el-button>
-            <el-button type="text" size="small" @click="onQuitRentCLick">确认退出</el-button>
+            <el-button type="text" size="small" @click="onQuitRentCLick" :loading="quitBtnLoading">确认退出</el-button>
           </div>
           <template #reference>
             <el-link
@@ -41,7 +41,7 @@
           </div>
           <div class="rent__location">
             <span class="text-gray-500 mr-5">房间</span>
-            <span>{{ pageData.myRoomId + 1 }}号房</span>
+            <span>{{ pageData.myRoomId }}号房</span>
           </div>
 
         </div>
@@ -71,8 +71,8 @@
         >
           <div class="error-text text-6xl font-bold leading-tight text-gray-900">
             <p class="text-9xl mb-10">空</p>
-            <p>您还没有租到房子</p>
-            <p>You did not rent any house</p>
+            <p>您目前没有在合约内的租赁</p>
+            <p>Your rent list is empty</p>
           </div>
         </div>
       </div>
@@ -89,10 +89,11 @@ import TopTitle from '@/components/TopTitle.vue'
 import UserCardVue from '@/components/UserCard.vue';
 
 let popupQuitRent = ref(false)
+let quitBtnLoading = ref(false)
 let myLandlord = ref({})
 let myRoommates = ref([])
 let pageData = reactive({
-  myRoomId: 0,
+  myRoomId: null,
   myRentHouse: {},
   myAddress: {
     province: '',
@@ -118,27 +119,41 @@ let pageData = reactive({
  * @description 点击退出合租事件
  */
 const onQuitRentCLick = () => {
+  quitBtnLoading.value = true
   // console.log(pageData.myRentHouse.id, pageData.myRoomId)
-  RequestUtil.getQuitRentHouse(pageData.myRentHouse.id, pageData.myRoomId)
-      .then(res => {
-        if (res.status === 200) {
-          NotificationUtil.Notify('退出合租成功', {
-            type: msgType.SUCCESS,
-            title: '提示'
-          })
-          getUserRentInfo()
-          // setTimeout(() => {
-          //   window.location.href = '/'
-          // }, 1000)
-        } else {
-          throw new Error('出错了' + res.status + res.data.message)
-        }
-      }).catch(err => {
-        NotificationUtil.Notify(`${err}`,{
-          type: msgType.ERROR,
-          title: '错误'
+  if (pageData.myRentHouse.id && pageData.myRoomId) {
+    RequestUtil.getQuitRentHouse(pageData.myRentHouse.id, pageData.myRoomId)
+        .then(res => {
+          if (res.status === 200) {
+            NotificationUtil.Notify('退出合租成功', {
+              type: msgType.SUCCESS,
+              title: '提示'
+            })
+            getUserRentInfo()
+            // setTimeout(() => {
+            //   window.location.href = '/'
+            // }, 1000)
+          } else {
+            throw new Error('出错了' + res.status + res.data.message)
+          }
         })
-      })
+        .catch(err => {
+          NotificationUtil.Notify(`退出合租失败，${JSON.stringify(err)}`, {
+            type: msgType.ERROR,
+            title: '错误'
+          })
+        })
+        .finally(() => {
+          popupQuitRent.value = false
+          quitBtnLoading.value = false
+        })
+  } else {
+    NotificationUtil.Notify('出错了，房源编号为空值，请刷新页面后重试。', {
+      type: msgType.ERROR,
+      title: '错误'
+    })
+  }
+
 }
 
 /**
@@ -148,29 +163,40 @@ const onQuitRentCLick = () => {
 const getUserRentInfo = () => {
   RequestUtil.getUserInfo(User.getToken())
       .then(res => {
-        console.log(res)
-        pageData.myRentHouse = res.rentedHouse
-
-        if (res.rentedHouse !== null) {
-          myLandlord.value = res.rentedHouse.creator
-        } else {
-          myLandlord.value = null
-        }
-
-        res.rentedHouse.roomList.forEach(room => {
-          if (room.tenement.id !== res.id) {
-            myRoommates.value.push(room.tenement)
-          }
-        })
-        pageData.myAddress = res.rentedHouse.address
+        // console.log(res)
+        onSetRentInfo(res)
       })
       .catch(err => {
         console.log(err)
-        NotificationUtil.Notify('获取用户信息出错，请稍后重试或重新登录', {
+        NotificationUtil.Notify(`获取用户信息出错，请稍后重试或重新登录。错误信息：${err}`, {
           title: '错误',
           type: msgType.ERROR
         })
       })
+}
+
+/**
+ * @function onSetRentInfo
+ * @description 设置合租信息，此方法于fetch请求获得数据后执行
+ * @param {Object} res 合租信息(Rent info)
+ * */
+const onSetRentInfo = (res = {rentedHouse: null}) => {
+  console.log('房屋信息', res)
+  pageData.myRentHouse = res.rentedHouse
+  if (res.rentedHouse !== null) {
+    // 如果用户有租房，则将租房信息存入变量
+    myLandlord.value = res.rentedHouse.creator
+    res.rentedHouse.roomList.forEach(room => {
+      if (room.tenement && room.tenement.id !== res.id) {
+        myRoommates.value.push(room.tenement)
+      } else {
+        pageData.myRoomId = room.roomId
+      }
+    })
+    pageData.myAddress = res.rentedHouse.address
+  } else {
+    myLandlord.value = null
+  }
 }
 
 getUserRentInfo()

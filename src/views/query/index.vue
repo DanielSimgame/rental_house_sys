@@ -40,11 +40,11 @@
       <!-- <HouseInfoCardVue :house-info="resultArr[0]" /> -->
     </div>
     <div class="house-list-container flex flex-col justify-center items-center py-16" v-else>
-      <h1 class="error-text text-6xl font-bold leading-tight text-gray-900">
+      <div class="error-text text-6xl font-bold leading-tight text-gray-900">
         <p class="text-9xl mb-5">空</p>
         <p>此地区暂无房源</p>
         <p>No House available</p>
-      </h1>
+      </div>
     </div>
   </div>
 </template>
