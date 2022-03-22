@@ -3,19 +3,25 @@ import nprogress from 'nprogress'
 import store from "@/store"
 import User from "@/utils/User"
 // import { routes } from './routes.js'
+import RequestUtil from "@/utils/RequestUtil"
 
 // Components
 import Home from "@/views/Home.vue"
-import RequestUtil from "@/utils/RequestUtil"
 // const Home = () => import("../views/Home.vue")
 const About = () => import("@/views/About.vue")
+const Query = () => import('@/views/query/index.vue')
+
+// 权限相关
 const NotFound = () => import('@/views/error/NotFound.vue')
 const NoPermission = () => import('@/views/error/NoPermission.vue')
 const Login = () => import('@/views/user/Login.vue')
 const SignUp = () => import('@/views/user/SignUp.vue')
-const Query = () => import('@/views/query/index.vue')
+
+// 房源信息页面
 const NewHouse = () => import('@/views/house/NewHouse.vue')
 const HouseDetail = () => import('@/views/house/HouseDetail.vue')
+// 房源编辑属于特殊组件，同时位于Admin与User面板中
+const HouseEdit = () => import('@/views/house/HouseEdit.vue')
 
 // 管理面板与次级路由
 const Admin = () => import('@/views/admin/Layout.vue')
@@ -56,7 +62,8 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
-    path: "/search/:keyword",
+    path: "/search",
+    // path: "/search/:keyword&page=:page",
     name: "Query",
     component: Query,
     meta: {
@@ -117,7 +124,16 @@ const routes: Array<RouteRecordRaw> = [
           title: "后台设置",
           roles: ["admin"]
         }
-      }
+      },
+      {
+        path: "/admin/houseedit",
+        name: "AdminHouseEdit",
+        component: HouseEdit,
+        meta: {
+          title: "管理员房源编辑",
+          roles: ["admin"],
+        }
+      },
     ]
   },
   {
@@ -155,6 +171,15 @@ const routes: Array<RouteRecordRaw> = [
           title: "个人中心",
           roles: ["admin", "user"]
         },
+      },
+      {
+        path: "/user/houseedit",
+        name: "UserHouseEdit",
+        component: HouseEdit,
+        meta: {
+          title: "房源编辑",
+          roles: ["admin", "user"],
+        }
       },
     ]
   },
@@ -201,7 +226,8 @@ const titleHandler = (to: any) => {
 
   if (to.meta.title) {
     if (to.name === "Query") {
-      const keyword = JSON.parse(decodeURI(to.params.keyword))
+      const keyword = JSON.parse(to.params.keyword || to.query.keyword)
+      // const keyword = JSON.parse(decodeURI(to.params.keyword))
       document.title = `${keyword[1] + keyword[2]}房源信息 - ${store.state.app.title}`
     } else {
       document.title = `${to.meta.title} - ${store.state.app.title}`

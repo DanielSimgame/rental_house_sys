@@ -1,6 +1,6 @@
 <template>
   <div
-    class="house-info-card group sm:w-80 md:w-80 lg:w-96 xl:w-96 2xl:w-96 bg-white border-slate-200 hover:border-indigo-600 border-2 
+    class="house-info-card group sm:w-80 md:w-80 lg:w-96 xl:w-96 2xl:w-96 bg-white border-slate-200 hover:border-indigo-600 border-2
     hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
   >
     <img class="mb-2 rounded-xl md:w-80 lg:w-96 xl:w-96 2xl:w-96" :src="imgUrl" alt />
@@ -23,7 +23,7 @@
           :key="i"
           v-show="obj.enable"
           class="house-info__tag w-fit mr-2 mt-2"
-          size="default"          
+          size="default"
         >{{ obj.text }}</el-tag>
       </div>
       <div class="house-info__landlord col-span-1">
@@ -159,15 +159,11 @@ const setTagChinese = () => {
   for (let key in props.houseInfo.allocation) {
     // console.log(key)
     // props.houseInfo.allocation[key] ? labels[key].enable = true : false
-    if (props.houseInfo.allocation[key]) {
-      labels[key].enable = true
-    } else {
-      labels[key].enable = false
-    }
+    labels[key].enable = !!props.houseInfo.allocation[key];
   }
 }
 
-watch(() => props.houseInfo, (val) => {
+watch(() => props.houseInfo, () => {
     setTagChinese()
 })
 

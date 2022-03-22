@@ -2,6 +2,12 @@ import Network from "./basic/Network";
 import store from "@/store";
 import User from "./User";
 
+export const getHouseListType = {
+    GET_BY_CITY: 1,
+    GET_BY_USER: 2,
+    GET_BY_PRICE: 3,
+}
+
 export default {
     /**
      * @function postLogin
@@ -97,18 +103,32 @@ export default {
     /**
      * @function getHouseList
      * @description 获取房源列表
-     * @param {Number} pageNum 页码
-     * @param {Number} pageSize 每页数量
-     * @param {String} city
-     * @param {String} district
+     * @param {Number} type 获取房源列表的类型，以getHouseListType为准，默认为GET_BY_CITY，获取城市下的房源，GET_BY_USER获取用户发布的房源
+     * @param {Number} pageNum 页码，默认第一页，即0
+     * @param {Number} pageSize 每页数量，默认10
+     * @param {Object} args 参数
+     * @param {String | null} args.city 城市名称
+     * @param {String | null} args.district 区域名称
+     * @param {String | null} args.userId 用户id
+     * @param {Number | null} args.price 价格
      */
-    getHouseList: async (city: string, district: string, pageNum: number, pageSize: number): Promise<Object> => {
-        let reqUrl = ''
-        if (city !== '' && district !== '') {
-            reqUrl = `${store.getters.getApiServer}/house/list?cityName=${city}&cityProper=${district}&pageNum=${pageNum}&pageSize=${pageSize}`
-        } else {
-            reqUrl = `${store.getters.getApiServer}/house/list?pageNum=${pageNum}&pageSize=${pageSize}`
+    getHouseList: async (type: number = getHouseListType.GET_BY_CITY, pageNum: number = 0, pageSize: number = 10, ...args): Promise<Object> => {
+        let reqUrl: string
+        switch (type) {
+            case getHouseListType.GET_BY_CITY:
+                reqUrl = `${store.getters.getApiServer}/house/list?cityName=${args[0].city}&cityProper=${args[0].district}&pageNum=${pageNum}&pageSize=${pageSize}`
+                break;
+            case getHouseListType.GET_BY_USER:
+                reqUrl = `${store.getters.getApiServer}/house/list?creatorId=${args[0].userId}&pageNum=${pageNum}&pageSize=${pageSize}`
+                break;
+            case getHouseListType.GET_BY_PRICE:
+                reqUrl = `${store.getters.getApiServer}/house/list?price=${args[0].price}&pageNum=${pageNum}&pageSize=${pageSize}`
+                break;
+            default:
+                reqUrl = `${store.getters.getApiServer}/house/list?pageNum=${pageNum}&pageSize=${pageSize}`
+                break;
         }
+
         const res: any = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
             return res.json();
@@ -119,9 +139,9 @@ export default {
     /**
      * @function getSingleHouse
      * @description 获取单个房源信息
-     * @param houseId 房源id
+     * @param {String} houseId 房源id
      */
-    getSingleHouse: async (houseId: number): Promise<Object> => {
+    getSingleHouse: async (houseId: string): Promise<Object> => {
         const reqUrl = `${store.getters.getApiServer}/house/single?houseId=${houseId}`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
@@ -195,7 +215,6 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/house/delete?houseId=${houseId}`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
-            console.log('House delete Api', res)
             return res;
         } else {
             return Promise.reject(res);

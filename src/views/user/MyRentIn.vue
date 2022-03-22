@@ -181,7 +181,7 @@ const getUserRentInfo = () => {
  * @param {Object} res 合租信息(Rent info)
  * */
 const onSetRentInfo = (res = {rentedHouse: null}) => {
-  console.log('房屋信息', res)
+  // console.log('房屋信息', res)
   pageData.myRentHouse = res.rentedHouse
   if (res.rentedHouse !== null) {
     // 如果用户有租房，则将租房信息存入变量

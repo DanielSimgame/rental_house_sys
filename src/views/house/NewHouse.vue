@@ -1,27 +1,28 @@
 <template>
   <div class="new-house__container w-full mx-auto py-10">
+    <!--    顶部标题栏-->
     <div class="w-full grid grid-cols-5">
       <TopTitle class="col-span-4" text="房源信息"/>
-      <div class="landlore__btn col-span-1 flex flex-col justify-center items-center">
+      <div class="landlord__btn col-span-1 flex flex-col justify-center items-center">
         <el-link
             :underline="false"
-            @click="onSubmit"
+            @click="onSubmitHandler"
             class="query-btn inline-flex w-full h-14 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
         >
           <span class="text-2xl flex flex-row justify-center items-center">
             <el-icon>
               <Plus/>
             </el-icon>
-            <span class="ml-3">立刻发布</span>
+            <span class="ml-3">保存并发布</span>
           </span>
         </el-link>
       </div>
     </div>
 
+    <!--    房源信息-->
     <el-divider content-position="left" direction="horizontal">
       <h2 class="text-2xl">不动产信息</h2>
     </el-divider>
-
     <el-form class="mx-auto" v-model="newHouseDTO.value">
       <el-form-item label="地区" prop="region">
         <el-col :span="3">
@@ -80,10 +81,20 @@
         </el-col>
       </el-form-item>
       <el-form-item label="地址" prop="address">
-        <el-input v-model="newHouseDTO.address.street" placeholder="街道 - 道路 - 门牌号"></el-input>
+        <el-input
+            v-model="newHouseDTO.address.street"
+            maxlength="100"
+            show-word-limit
+            placeholder="街道 - 道路 - 门牌号">
+        </el-input>
       </el-form-item>
       <el-form-item label="描述" prop="title">
-        <el-input v-model="newHouseDTO.title" placeholder="5到20字的房源描述"></el-input>
+        <el-input
+            v-model="newHouseDTO.title"
+            maxlength="20"
+            show-word-limit
+            placeholder="5到20字的房源标题">
+        </el-input>
       </el-form-item>
       <el-form-item label="配置" prop="spec">
         <el-checkbox
@@ -98,6 +109,24 @@
         />
       </el-form-item>
     </el-form>
+
+    <!--    图片上传/房源简介-->
+    <el-divider content-position="left" direction="horizontal">
+      <h2 class="text-2xl">房源简介</h2>
+    </el-divider>
+    <el-form>
+      <el-form-item label="简介" prop="description">
+        <el-input
+            v-model="newHouseDTO.description"
+            type="textarea"
+            maxlength="400"
+            show-word-limit
+            :autosize="{ minRows: 3, maxRows: 5 }"
+            placeholder="请输入房源简介（例如：房源小区位置，周围是否有公共交通，房源楼层，最近的学校、超市、医院等信息，或者是上一栏配置中未提及的事物。请不要填写您的手机号、微信等联系方式或敏感信息）"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <!--    房间列表-->
     <el-divider content-position="left" direction="horizontal">
       <h2 class="text-2xl">房间列表</h2>
     </el-divider>
@@ -109,13 +138,18 @@
           v-for="(item, index) in newHouseDTO.roomList"
           :key="index"
       >
-        <div class="room-list__item-del-wrap cursor-pointer bg-orange-600 w-6 absolute top-0 right-0"
+        <div class="room-list__item-func-wrap cursor-pointer bg-orange-600 w-6 absolute top-0 right-0
+        transition-all hover:scale-150 hover:-translate-x-1 hover:translate-y-1"
              @click="onRemoveRoomClick(index)">
           <el-button
+              title="删除"
               type="text"
               size="small"
-              class="room-list__item-del text-white font-bold right-0"
-          >x
+              class="room-list__item-func text-white font-bold right-0"
+          >
+            <el-icon>
+              <CloseBold/>
+            </el-icon>
           </el-button>
         </div>
         <div class="flex flex-col items-center">
@@ -166,18 +200,18 @@
         </div>
       </el-button>
     </div>
+
   </div>
 </template>
 
 <script setup>
-import {Plus} from '@element-plus/icons-vue'
-import defaultRoomImg from '@/assets/images/roomPic.jpg'
-import RequestUtil from '@/utils/RequestUtil';
-import {computed, onMounted, reactive, ref, watch} from 'vue';
-import {useRoute, useRouter} from 'vue-router';
-import TopTitle from '@/components/TopTitle.vue';
+import {Plus, CloseBold} from '@element-plus/icons-vue'
+import RequestUtil from '@/utils/RequestUtil'
+import {onMounted, reactive, ref, watch} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import TopTitle from '@/components/TopTitle.vue'
 import houseImg from '@/assets/images/roomPic.jpg'
-import NotificationUtil, {msgType} from '@/utils/NotificationUtil';
+import NotificationUtil, {msgType} from '@/utils/NotificationUtil'
 
 const route = useRoute()
 const router = useRouter()
@@ -228,6 +262,7 @@ let newHouseDTO = reactive({
     wifi: false
   },
   id: null,
+  description: "",
   roomList: [
     {
       description: "",
@@ -353,7 +388,6 @@ const onRemoveRoomClick = (index) => {
       type: msgType.WARNING,
       title: '提示'
     })
-    return
   } else if (index > 0) {
     newHouseDTO.roomList.splice(index, 1)
   }
@@ -378,10 +412,10 @@ const onCheckboxChange = (value) => {
 }
 
 /**
- * @function onSubmit
+ * @function onSubmitHandler
  * @description 提交表单
  */
-const onSubmit = () => {
+const onSubmitHandler = () => {
   // console.log(newHouseDTO)
   RequestUtil.postCreateHouse(newHouseDTO)
       .then(res => {
@@ -398,7 +432,7 @@ const onSubmit = () => {
         // console.log(res)
       })
       .catch(err => {
-        NotificationUtil.Notify('发布失败', {
+        NotificationUtil.Notify('发布失败' + err, {
           type: msgType.ERROR,
           title: '提示'
         })
@@ -420,12 +454,12 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 
-.room-list__item-del-wrap {
+.room-list__item-func-wrap {
   border-bottom-left-radius: 40%;
 }
 
-.room-list__item-del {
-  transform: translate(8px, -1px);
+.room-list__item-func {
+  transform: translate(5px, -1px);
   color: #fff;
 }
 </style>

@@ -1,19 +1,26 @@
 <template>
-    <div class="admin-layout bg-gray-50">
-        <el-container>
-            <el-aside class="admin-aside" width="200px">
-                <AdminAsideMenuVue />
-            </el-aside>
-            <el-main>
-                <router-view></router-view>
-            </el-main>
-        </el-container>
-    </div>
+  <div class="admin-layout bg-gray-50">
+    <el-container>
+      <el-aside class="admin-aside" width="200px">
+        <el-affix :offset="86">
+          <AdminAsideMenuVue/>
+        </el-affix>
+      </el-aside>
+      <el-main>
+
+        <router-view v-slot="{ Component }">
+          <keep-alive>
+            <component :is="Component"/>
+          </keep-alive>
+        </router-view>
+
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script setup>
-import { onMounted, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import {useRouter, useRoute} from "vue-router";
 import AdminAsideMenuVue from "../../components/AdminAsideMenu.vue";
 
 const router = useRouter()
@@ -26,7 +33,7 @@ router.push("/admin/dashboard")
 
 <style>
 .admin-aside {
-    height: calc(100vh - 85.5px);
-    background-color: #545c64;
+  min-height: calc(100vh - 85.5px);
+  background-color: #545c64;
 }
 </style>

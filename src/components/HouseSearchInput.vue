@@ -106,7 +106,7 @@ const handleCityChange = (selectedOptions) => {
 const onSearchClick = () => {
   // console.log(selectedCity.value, cascader.value.getCheckedNodes())
   if (cascader.value.getCheckedNodes().length !== 0) {
-    goSearch(JSON.stringify(selectedCity.value))
+    goSearch(0, JSON.stringify(selectedCity.value))
   } else {
     NotificationUtil.TopMsg('请先选择一个城市', { type: 'warning', duration: 2000, offset: 100 })
   }
