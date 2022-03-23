@@ -424,8 +424,8 @@ const onSubmitHandler = () => {
           title: '提示'
         })
         router.push({
-          name: 'HouseDetail',
-          params: {
+          path: '/house/detail',
+          query: {
             id: res.id
           }
         })

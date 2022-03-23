@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>合租房管理系统</title>
     <link
-      rel="preload"
-      href="/font/Inter-roman.var.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
+            rel="preload"
+            href="/font/Inter-roman.var.woff2"
+            as="font"
+            type="font/woff2"
+            crossorigin="anonymous"
     />
     <!-- <link rel="preload" href="/font/Inter-italic.var.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
-    <link rel="stylesheet" href="/font/inter.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <link rel="stylesheet" href="/font/inter.css"/>
+</head>
+<body>
+<audio id="chatAudio" src="/src/assets/audio/audio_msg.mp3" ></audio>
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+<script>
+    let ws = new WebSocket('wss://hzf.keker.ink/message/eyJhbGciOiJFUzI1NiJ9.eyJ1aWQiOiI2MjI0M2RjMWMwZjBjMjU0NWIzNzk3ODgiLCJqdGkiOiI2MjNhZjZiY2ViZDFlMTEzMjIzNjdmMWEiLCJ1c2VybmFtZSI6Im1laWtlIiwiZXhwIjoxNjQ4NDYzNDIwfQ.zCi9BqAHYC1qyIRGEN16lG9GjL9XODj97Sg0WR_VPFoyihOdRPTvLwJR6SX9PmWZPXmHZO_QtBzRX5nTxi_7iQ')
+    ws.onopen = function () {
+        console.log('ws onopen');
+        ws.send('from client: hello');
+    };
+    ws.onmessage = function (e) {
+        console.log('ws onmessage');
+        console.log('from server: ' + e.data);
+    };
+    ws.onclose = function () {
+        console.log('ws onclose');
+    };
+    ws.onerror = function (e) {
+        console.log('ws onerror');
+        console.log(e);
+    };
+    // document.querySelector('#chatAudio').play();
+</script>
+</body>
 </html>

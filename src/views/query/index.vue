@@ -122,7 +122,7 @@ const onNewHouseClick = () => {
  */
 const onHouseClick = id => {
   router.push({
-    name: "HouseDetail",
+    path: '/house/detail',
     query: {
       id: id
     }

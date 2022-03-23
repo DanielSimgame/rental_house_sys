@@ -18,7 +18,7 @@
       </div>
       <div
         class="user-info__container group min-w-fit grid grid-cols-3 px-5 2xl:col-span-3 xl:col-span-4 lg:col-span-5 md:col-span-6 sm:col-span-6"
-        v-if="userInfo.name !== '' ? true : false"
+        v-if="userInfo.name !== ''"
       >
         <!-- <div
                 class="user-info__card bg-white hover:bg-indigo-600 text-black hover:text-white px-4 py-4 rounded-xl cursor-pointer flex flex-row items-center transition-all ease-in-out hover:shadow-lg"

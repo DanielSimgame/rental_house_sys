@@ -23,7 +23,7 @@
     <el-divider content-position="left" direction="horizontal">
       <h2 class="text-2xl">不动产信息</h2>
     </el-divider>
-    <el-form class="mx-auto" v-model="editHouseDTO.value" :rules="editRules">
+    <el-form class="mx-auto" v-model="editHouseDTO.value">
 
       <el-tooltip effect="dark" content="修改房源时不允许修改行政区信息" placement="top-start">
         <el-form-item label="地区" prop="region">
@@ -110,7 +110,7 @@
     <el-divider content-position="left" direction="horizontal">
       <h2 class="text-2xl">房源简介</h2>
     </el-divider>
-    <el-form v-model="editHouseDTO.description" :rules="editRules">
+    <el-form v-model="editHouseDTO.description">
       <el-form-item label="简介" prop="description">
         <el-input
             v-model="editHouseDTO.description"
@@ -334,7 +334,7 @@ const labels = reactive({
   }
 })
 
-console.log(route.query.houseId)
+console.log('Query house id', route.query.houseId)
 
 /**
  * @function onSubmitHandler
@@ -349,8 +349,8 @@ const onSubmitHandler = () => {
           title: '提示'
         })
         router.push({
-          name: 'HouseDetail',
-          params: {
+          path: '/house/detail',
+          query: {
             id: res.id
           }
         })
@@ -365,11 +365,11 @@ const onSubmitHandler = () => {
       })
 }
 
-if (typeof route.query.houseId !== 'undefined') {
+if (route.query.houseId !== undefined) {
   RequestUtil.getSingleHouse(route.query.houseId).then(res => {
-    console.log(res)
+    // console.log(res)
     Object.assign(editHouseDTO, res)
-    console.log('editHouseDTO', editHouseDTO)
+    // console.log('editHouseDTO', editHouseDTO)
   })
 }
 
