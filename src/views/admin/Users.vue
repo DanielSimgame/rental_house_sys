@@ -78,7 +78,7 @@
 
 <script setup>
 import TopTitleVue from '@/components/TopTitle.vue';
-import NotificationUtil, {msgType} from "@/utils/NotificationUtil";
+import Notification, {msgType} from "@/utils/basic/Notification";
 import RequestUtil from "@/utils/RequestUtil";
 import {ref} from 'vue'
 
@@ -100,12 +100,12 @@ const onBtnAddAdminClick = async () => {
   await RequestUtil.getAddAdmin(inputAddAdmin.value)
       .then(res => {
         if (res.success) {
-          NotificationUtil.Notify('添加管理员成功！', {type: msgType.SUCCESS});
+          Notification.Notify('添加管理员成功！', {type: msgType.SUCCESS});
           inputAddAdmin.value = '';
         }
       })
       .catch(err => {
-        NotificationUtil.Notify(err.toString(), {type: msgType.ERROR, title: '错误'})
+        Notification.Notify(err.toString(), {type: msgType.ERROR, title: '错误'})
       })
       .finally(() => {
         btnAddLoading.value = false;
@@ -126,12 +126,12 @@ const onBtnDelAdminClick = async () => {
   await RequestUtil.getDelAdmin(inputDelAdmin.value)
       .then(res => {
         if (res.success) {
-          NotificationUtil.Notify('删除管理员成功！', {type: msgType.SUCCESS});
+          Notification.Notify('删除管理员成功！', {type: msgType.SUCCESS});
           inputDelAdmin.value = '';
         }
       })
       .catch(err => {
-        NotificationUtil.Notify(err.toString(), {type: msgType.ERROR, title: '错误'})
+        Notification.Notify(err.toString(), {type: msgType.ERROR, title: '错误'})
       })
       .finally(() => {
         btnDelLoading.value = false;

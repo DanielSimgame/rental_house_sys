@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto p-5">
-    <div class="house-detail__top shadow-xl grid grid-cols-3 p-5 mb-5 border rounded-xl">
-      <div class="house-detail__top-item col-span-2 row-span-3 mr-5">
+    <div class="house-detail__top shadow-xl xl:grid xl:grid-cols-3 lg:flex lg:flex-row p-5 mb-5 border rounded-xl">
+      <div class="house-detail__top-item col-span-2 row-span-3 lg:mr-5 md:mr-0">
         <img :src="roomPic" alt class="w-full object-cover rounded-xl"/>
       </div>
       <!-- 面板只能放三个房间信息，超出会宽度溢出 -->
@@ -130,10 +130,12 @@ import roomPic from "@/assets/images/roomPic.jpg"
 import RequestUtil from '@/utils/RequestUtil';
 import {useRoute, useRouter} from 'vue-router';
 import {onMounted, reactive, ref, watch} from 'vue';
-import NotificationUtil, {msgType, msgDuration} from '@/utils/NotificationUtil';
+import {useStore} from 'vuex';
+import Notification, {msgType, msgDuration} from '@/utils/basic/Notification';
 
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 
 let id = ref(route.query.id)
 let houseInfo = reactive({})
@@ -221,14 +223,25 @@ if (id.value && id.value !== '') {
         roomAllocation.value = houseInfo.value.allocation
         // 只展示前三个房源
         roomList.value = houseInfo.value.roomList.slice(0, 3)
-        if (roomList.value[0].tenement && roomList.value[1].tenement && roomList.value[2].tenement) {
-          // 满人了
-          roomAvailable.value = false
+
+        // 判断房源是否已满员，以roomList数组中元素的tenement属性是否有值为判定
+        switch (roomList.value.length) {
+          case 1:
+            roomAvailable.value = !roomList.value[0].tenement
+            break
+          case 2:
+            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement)
+            break
+          case 3:
+            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement && roomList.value[2].tenement)
+            break
+          default:
+            roomAvailable.value = false
         }
         // console.log(houseInfo)
       })
 } else {
-  NotificationUtil.Notify('房源id为空，请检查网址是否正确。', {title: '错误', type: msgType.ERROR, duration: msgDuration.LONG})
+  Notification.Notify('房源id为空，请检查网址是否正确。', {title: '错误', type: msgType.ERROR, duration: msgDuration.LONG})
 }
 
 /**
@@ -262,8 +275,7 @@ const onJoinRentClick = () => {
   // console.log('house id:', houseId, 'selected room id:', selectedRoomId)
   RequestUtil.getJoinRentHouse(houseId, selectedRoomId)
       .then(() => {
-        // console.log(res)
-        NotificationUtil.Notify('加入合租成功！正在前往个人中心。', {title: '成功', type: msgType.SUCCESS})
+        Notification.Notify('加入合租成功！正在前往个人中心。', {title: '成功', type: msgType.SUCCESS})
         setTimeout(() => {
           clearTimeout(1500)
           router.push('/user/rentin')
@@ -271,7 +283,7 @@ const onJoinRentClick = () => {
       })
       .catch(err => {
         // console.log(err)
-        NotificationUtil.Notify('出错了，请联系工作人员。' + err, {title: '错误', type: msgType.ERROR})
+        Notification.Notify('出错了，请联系工作人员。' + err, {title: '错误', type: msgType.ERROR})
       })
 }
 

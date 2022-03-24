@@ -6,4 +6,5 @@ export default {
     getUserInfo: state => state.userInfo,
     getRoleInUserInfo: state => state.userInfo.role,
     getDefaultAvatar: state => state.defaultAvatar,
+    getChatView: state => state.chatView,
 }

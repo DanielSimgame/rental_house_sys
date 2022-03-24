@@ -66,7 +66,7 @@ import store from "@/store";
 import {Plus, Loading} from "@element-plus/icons-vue"
 import {useRoute, useRouter} from "vue-router";
 import {computed, reactive, ref, watch} from 'vue';
-// import NotificationUtil, {msgType} from '@/utils/NotificationUtil';
+// import Notification, {msgType} from '@/utils/basic/Notification';
 import RequestUtil, {getHouseListType} from '@/utils/RequestUtil';
 // import User from '@/utils/User'
 // import
@@ -92,13 +92,13 @@ let myRealEstateList = reactive([])
  * @param {number} pageSize 每页数量
  * */
 const getRealEstateList = (pageNum = 0, pageSize = 10) => {
-  console.log(pageData.userId)
+  // console.log(pageData.userId)
   RequestUtil.getHouseList(getHouseListType.GET_BY_USER, pageNum, pageSize, {userId: pageData.userId})
       .then(res => {
         // console.log('res', res)
         myRealEstateList.value = res
         myRealEstateList.value.length === 0 ? isEmptyList.value = true : isEmptyList.value = false
-        console.log('myRealEstateList', myRealEstateList.value)
+        // console.log('myRealEstateList', myRealEstateList.value)
       })
       .finally(() => {
         isLoading.value = false

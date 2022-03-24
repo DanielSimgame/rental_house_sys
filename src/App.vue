@@ -13,22 +13,36 @@
         <router-view />
       </el-main>
     </el-container>
+<!--    <el-dialog v-model="chatVisible" title="Tips" width="30%" :modal="false" draggable>-->
+<!--      <span>It's a draggable Dialog</span>-->
+<!--      <template #footer>-->
+<!--      <span class="dialog-footer">-->
+<!--        <el-button @click="chatVisible = false">Cancel</el-button>-->
+<!--        <el-button type="primary" @click="chatVisible = false">-->
+<!--          Confirm-->
+<!--        </el-button>-->
+<!--      </span>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount } from "vue";
+import {onBeforeMount, ref, nextTick} from "vue";
 import 'nprogress/nprogress.css';
 import '@/assets/scss/element/index.scss';
-import User from './utils/User';
-import store from "./store";
+// import store from "./store";
+import {useStore} from "vuex";
 import RequestUtil from "./utils/RequestUtil";
 
 import HzfHeader from './components/HzfHeader.vue';
-import Notification, { msgType } from "./utils/NotificationUtil";
+import Notification, { msgType } from "./utils/basic/Notification";
 import router from "./router";
+import {app} from "@/main";
+import VueNativeSock from "vue-native-websocket-vue3";
+import User from "./utils/User";
 
-// const title = ref('nmsl');
+const store = useStore();
 
 /**
  * @function initPage
@@ -78,7 +92,17 @@ onBeforeMount(() => {
   //   userInfo = User.getUserInfo();
   // }
   initPage();
+
 });
+// let ws = io('http://localhost');
+// socket.on('news', function (data) {
+//   console.log(data);
+//   socket.emit('my other event', { my: 'data' });
+// });
+
+// use(VueNativeSock, import.meta.env.VITE_WSS_URL)
+
+
 </script>
 
 <style lang="scss">

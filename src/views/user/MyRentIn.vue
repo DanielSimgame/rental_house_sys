@@ -17,7 +17,7 @@
                 border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white
                 transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
             >
-              <span class="text-2xl text-white">退出合租</span>
+              <span class="text-xl text-white">退出合租</span>
             </el-link>
           </template>
         </el-popover>
@@ -82,7 +82,7 @@
 
 <script setup>
 import {computed, reactive, ref} from 'vue';
-import NotificationUtil, {msgType} from '@/utils/NotificationUtil';
+import Notification, {msgType} from '@/utils/basic/Notification';
 import RequestUtil from '@/utils/RequestUtil';
 import User from '@/utils/User'
 import TopTitle from '@/components/TopTitle.vue'
@@ -125,7 +125,7 @@ const onQuitRentCLick = () => {
     RequestUtil.getQuitRentHouse(pageData.myRentHouse.id, pageData.myRoomId)
         .then(res => {
           if (res.status === 200) {
-            NotificationUtil.Notify('退出合租成功', {
+            Notification.Notify('退出合租成功', {
               type: msgType.SUCCESS,
               title: '提示'
             })
@@ -138,7 +138,7 @@ const onQuitRentCLick = () => {
           }
         })
         .catch(err => {
-          NotificationUtil.Notify(`退出合租失败，${JSON.stringify(err)}`, {
+          Notification.Notify(`退出合租失败，${JSON.stringify(err)}`, {
             type: msgType.ERROR,
             title: '错误'
           })
@@ -148,7 +148,7 @@ const onQuitRentCLick = () => {
           quitBtnLoading.value = false
         })
   } else {
-    NotificationUtil.Notify('出错了，房源编号为空值，请刷新页面后重试。', {
+    Notification.Notify('出错了，房源编号为空值，请刷新页面后重试。', {
       type: msgType.ERROR,
       title: '错误'
     })
@@ -168,7 +168,7 @@ const getUserRentInfo = () => {
       })
       .catch(err => {
         console.log(err)
-        NotificationUtil.Notify(`获取用户信息出错，请稍后重试或重新登录。错误信息：${err}`, {
+        Notification.Notify(`获取用户信息出错，请稍后重试或重新登录。错误信息：${err}`, {
           title: '错误',
           type: msgType.ERROR
         })

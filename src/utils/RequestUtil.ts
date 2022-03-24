@@ -245,7 +245,7 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/house/rent?houseId=${houseId}&roomId=${roomId}`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
-            console.log('House rent Api', res)
+            // console.log('House rent Api', res)
             return res;
         } else {
             return Promise.reject(res);
@@ -264,6 +264,26 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/house/quit?houseId=${houseId}&roomId=${roomId}`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+     * @function postSendRentNotice
+     * @description 向发送租房消息
+     * @param {Object} data 消息信息
+     * @example data = {
+     *   "contain": "",
+     *   "receiverId": "",
+     *   "type": "message"
+     * }
+     * */
+    postSendRentNotice: async (data: Object): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/message/send`
+        const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
+        if (res.status === 200) {
+            console.log(res)
             return res;
         } else {
             return Promise.reject(res);

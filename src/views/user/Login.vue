@@ -84,11 +84,15 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import store from "@/store";
+// import store from "@/store";
+import {useStore} from "vuex";
 import RequestUtil from "@/utils/RequestUtil";
 import { goHome, goSignup } from "@/utils/RouterUtil";
-import NotificationUtil, { msgType } from "@/utils/NotificationUtil";
+import Notification, { msgType } from "@/utils/basic/Notification";
 import User from "@/utils/User";
+
+const store = useStore()
+console.log(store)
 
 const disabledMsg = ref('手机验证码登录未开放，请使用账号密码登录')
 let loginMethod = ref('account')
@@ -126,7 +130,7 @@ const onLoginClick = async () => {
             goHome()
           })
       } else {
-        NotificationUtil.Notify('请检查您的账号密码', {
+        Notification.Notify('请检查您的账号密码', {
           title: '登录失败',
           type: msgType.ERROR,
         })
@@ -135,7 +139,7 @@ const onLoginClick = async () => {
     .catch(err => {
       console.log(err)
       loading.value = false
-      NotificationUtil.Notify('登录失败！', { title: '错误', type: msgType.ERROR})
+      Notification.Notify('登录失败！', { title: '错误', type: msgType.ERROR})
     })
 }
 

@@ -211,7 +211,7 @@ import {onMounted, reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import TopTitle from '@/components/TopTitle.vue'
 import houseImg from '@/assets/images/roomPic.jpg'
-import NotificationUtil, {msgType} from '@/utils/NotificationUtil'
+import Notification, {msgType} from '@/utils/basic/Notification'
 
 const route = useRoute()
 const router = useRouter()
@@ -384,7 +384,7 @@ const onAddRoomClick = () => {
  */
 const onRemoveRoomClick = (index) => {
   if (index === 0) {
-    NotificationUtil.Notify('第一个房间不能删除', {
+    Notification.Notify('第一个房间不能删除', {
       type: msgType.WARNING,
       title: '提示'
     })
@@ -419,7 +419,7 @@ const onSubmitHandler = () => {
   // console.log(newHouseDTO)
   RequestUtil.postCreateHouse(newHouseDTO)
       .then(res => {
-        NotificationUtil.Notify('发布成功', {
+        Notification.Notify('发布成功', {
           type: msgType.SUCCESS,
           title: '提示'
         })
@@ -432,7 +432,7 @@ const onSubmitHandler = () => {
         // console.log(res)
       })
       .catch(err => {
-        NotificationUtil.Notify('发布失败' + err, {
+        Notification.Notify('发布失败' + err, {
           type: msgType.ERROR,
           title: '提示'
         })

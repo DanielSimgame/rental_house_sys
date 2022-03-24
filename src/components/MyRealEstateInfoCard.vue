@@ -97,7 +97,7 @@ import {useRoute, useRouter} from "vue-router"
 import houseImg from '@/assets/images/roomPic.jpg'
 import UserCardVue from './UserCard.vue'
 import RequestUtil from "@/utils/RequestUtil";
-import NotificationUtil, {msgDuration, msgType} from "@/utils/NotificationUtil";
+import Notification, {msgDuration, msgType} from "@/utils/basic/Notification";
 
 const route = useRoute();
 const router = useRouter();
@@ -206,7 +206,7 @@ const onHouseDeleteClick = () => {
 const onHouseDeleteConfirm = () => {
   RequestUtil.getDeleteHouse(props.houseInfo.id)
       .then(() => {
-        NotificationUtil.Notify('下架房源成功！', {
+        Notification.Notify('下架房源成功！', {
           type: msgType.SUCCESS,
           duration: msgDuration.LONG,
         })
@@ -215,7 +215,7 @@ const onHouseDeleteConfirm = () => {
         }, 2000)
       })
       .catch(err => {
-        NotificationUtil.Notify('下架房源失败！' + err.responseText, {
+        Notification.Notify('下架房源失败！' + err.responseText, {
           type: msgType.ERROR,
           duration: msgDuration.LONG,
         })

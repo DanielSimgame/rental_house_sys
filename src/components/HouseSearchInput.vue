@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import NotificationUtil from '@/utils/NotificationUtil';
+import Notification from '@/utils/basic/Notification';
 import RequestUtil from '@/utils/RequestUtil';
 import { goSearch } from '@/utils/RouterUtil';
 import { onMounted, reactive, ref } from 'vue';
@@ -108,7 +108,7 @@ const onSearchClick = () => {
   if (cascader.value.getCheckedNodes().length !== 0) {
     goSearch(0, JSON.stringify(selectedCity.value))
   } else {
-    NotificationUtil.TopMsg('请先选择一个城市', { type: 'warning', duration: 2000, offset: 100 })
+    Notification.TopMsg('请先选择一个城市', { type: 'warning', duration: 2000, offset: 100 })
   }
 }
 

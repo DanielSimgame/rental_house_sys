@@ -187,7 +187,7 @@ import TopTitle from '@/components/TopTitle.vue'
 import houseImg from '@/assets/images/roomPic.jpg'
 import {useRoute, useRouter} from "vue-router"
 import RequestUtil from "@/utils/RequestUtil";
-import NotificationUtil, {msgType} from "@/utils/NotificationUtil";
+import Notification, {msgType} from "@/utils/basic/Notification";
 
 const route = useRoute();
 const router = useRouter();
@@ -344,7 +344,7 @@ const onSubmitHandler = () => {
   // console.log(editHouseDTO)
   RequestUtil.postEditHouse(editHouseDTO)
       .then(res => {
-        NotificationUtil.Notify('发布成功', {
+        Notification.Notify('发布成功', {
           type: msgType.SUCCESS,
           title: '提示'
         })
@@ -357,7 +357,7 @@ const onSubmitHandler = () => {
         // console.log(res)
       })
       .catch(err => {
-        NotificationUtil.Notify('发布失败' + err, {
+        Notification.Notify('发布失败' + err, {
           type: msgType.ERROR,
           title: '提示'
         })

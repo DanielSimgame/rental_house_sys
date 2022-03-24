@@ -2,6 +2,7 @@ import router from "../router";
 
 export const goHome = () => {
     router.push({ name: "Home" })
+    window.location.reload()
 }
 
 export const goSignup = () => {

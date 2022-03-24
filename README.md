@@ -16,6 +16,8 @@
 - [Heroicons](https://github.com/tailwindlabs/heroicons#vue) - beautiful hand-crafted SVG icons,
 by the makers of Tailwind CSS
 - [prettier-plugin-tailwindcss](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier) - Automatic Class Sorting with Prettier
+- [vue native websocket vue3](https://github.com/likaia/vue-native-websocket-vue3) - 快速搭建Socket业务逻辑。
+
 
 Tailwind UI所需第一方插件：
 

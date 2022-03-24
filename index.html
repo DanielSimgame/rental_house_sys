@@ -18,24 +18,5 @@
 <audio id="chatAudio" src="/src/assets/audio/audio_msg.mp3" ></audio>
 <div id="app"></div>
 <script type="module" src="/src/main.js"></script>
-<script>
-    let ws = new WebSocket('wss://hzf.keker.ink/message/eyJhbGciOiJFUzI1NiJ9.eyJ1aWQiOiI2MjI0M2RjMWMwZjBjMjU0NWIzNzk3ODgiLCJqdGkiOiI2MjNhZjZiY2ViZDFlMTEzMjIzNjdmMWEiLCJ1c2VybmFtZSI6Im1laWtlIiwiZXhwIjoxNjQ4NDYzNDIwfQ.zCi9BqAHYC1qyIRGEN16lG9GjL9XODj97Sg0WR_VPFoyihOdRPTvLwJR6SX9PmWZPXmHZO_QtBzRX5nTxi_7iQ')
-    ws.onopen = function () {
-        console.log('ws onopen');
-        ws.send('from client: hello');
-    };
-    ws.onmessage = function (e) {
-        console.log('ws onmessage');
-        console.log('from server: ' + e.data);
-    };
-    ws.onclose = function () {
-        console.log('ws onclose');
-    };
-    ws.onerror = function (e) {
-        console.log('ws onerror');
-        console.log(e);
-    };
-    // document.querySelector('#chatAudio').play();
-</script>
 </body>
 </html>

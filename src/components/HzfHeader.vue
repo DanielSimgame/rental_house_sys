@@ -52,17 +52,20 @@
 
 <script>
 import { reactive, watch, computed } from "vue"
-import store from "@/store"
+// import store from "@/store"
+import {useStore} from "vuex";
 import User from '@/utils/User';
 import router from "../router";
 import { goAdmin } from '@/utils/RouterUtil';
-import NotificationUtil from "../utils/NotificationUtil";
+import Notification from "../utils/basic/Notification";
 import logoImg from '@/assets/images/logo.png';
 import UserCard from './UserCard.vue';
 
 export default {
   name: "HzfHeader",
   setup() {
+    const store = useStore()
+
     let userInfo = reactive({
       name: "",
       role: "",
@@ -94,7 +97,7 @@ export default {
       store.commit("clearUserInfo");
       User.delToken();
       User.delUserInfoInSession();
-      NotificationUtil.Notify("退出登录成功", { type: "success", title: "退出登录" });
+      Notification.Notify("退出登录成功", { type: "success", title: "退出登录" });
       router.push("/login");
       window.location.reload();
     }
