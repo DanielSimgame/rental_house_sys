@@ -13,33 +13,35 @@
         <router-view />
       </el-main>
     </el-container>
-<!--    <el-dialog v-model="chatVisible" title="Tips" width="30%" :modal="false" draggable>-->
-<!--      <span>It's a draggable Dialog</span>-->
+    <el-dialog v-model="$store.state.app.chatView" title="聊天" width="800px" :modal="false" draggable destroy-on-close>
+      <ChatView></ChatView>
 <!--      <template #footer>-->
 <!--      <span class="dialog-footer">-->
-<!--        <el-button @click="chatVisible = false">Cancel</el-button>-->
-<!--        <el-button type="primary" @click="chatVisible = false">-->
+<!--        <el-button @click="$store.commit('setChatViewVisibility', false)">Cancel</el-button>-->
+<!--        <el-button type="primary" @click="$store.commit('setChatViewVisibility', false)">-->
 <!--          Confirm-->
 <!--        </el-button>-->
 <!--      </span>-->
 <!--      </template>-->
-<!--    </el-dialog>-->
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import {onBeforeMount, ref, nextTick} from "vue";
+import {onBeforeMount} from "vue";
 import 'nprogress/nprogress.css';
+import '@/assets/scss/nprogress/index.scss';
 import '@/assets/scss/element/index.scss';
 // import store from "./store";
 import {useStore} from "vuex";
 import RequestUtil from "./utils/RequestUtil";
 
+import ChatView from "./views/chat/ChatView.vue";
 import HzfHeader from './components/HzfHeader.vue';
 import Notification, { msgType } from "./utils/basic/Notification";
 import router from "./router";
-import {app} from "@/main";
-import VueNativeSock from "vue-native-websocket-vue3";
+// import {app} from "@/main";
+// import VueNativeSock from "vue-native-websocket-vue3";
 import User from "./utils/User";
 
 const store = useStore();
@@ -69,10 +71,8 @@ const initPage = async () => {
         store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
         store.commit('setUserInfo', r)
         User.setUserInfoInSession(r)
-        // console.log(r)
       })
       .catch(e => {
-        // console.log(e)
         Notification.Notify('连接服务器失败，无法获取用户信息，请重新登录账号。', {
           type: msgType.ERROR,
           title: '出错',
@@ -88,26 +88,11 @@ const initPage = async () => {
 };
 
 onBeforeMount(() => {
-  // if (User.isLogin()) {
-  //   userInfo = User.getUserInfo();
-  // }
   initPage();
-
 });
-// let ws = io('http://localhost');
-// socket.on('news', function (data) {
-//   console.log(data);
-//   socket.emit('my other event', { my: 'data' });
-// });
 
 // use(VueNativeSock, import.meta.env.VITE_WSS_URL)
-
-
 </script>
-
-<style lang="scss">
-@use '@/assets/scss/nprogress/index.scss';
-</style>
 
 <style>
 .error-text {

@@ -92,7 +92,6 @@ import Notification, { msgType } from "@/utils/basic/Notification";
 import User from "@/utils/User";
 
 const store = useStore()
-console.log(store)
 
 const disabledMsg = ref('手机验证码登录未开放，请使用账号密码登录')
 let loginMethod = ref('account')

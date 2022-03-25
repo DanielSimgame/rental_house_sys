@@ -37,7 +37,7 @@ const UserInformation = () => import('@/views/user/MyInformation.vue')
 
 // const whiteList = ['/login', '/auth-redirect']
 const whiteList = ['/login', '/signup', '/404', '/403'] // 未登录不重定向白名单
-const redirectList = ['/login', '/register'] // 已登录重定向名单
+const redirectList = ['/login', '/signup'] // 已登录重定向名单
 
 nprogress.configure({ showSpinner: false })
 
@@ -233,7 +233,7 @@ const titleHandler = (to: any) => {
       document.title = `${to.meta.title} - ${store.state.app.title}`
     }
   } else {
-    document.title = "合租房管理系统"//没有就默认
+    document.title = "合租房管理系统"  //没有就默认
   }
 }
 
@@ -261,16 +261,13 @@ router.beforeEach(async (to, from, next) => {
       await RequestUtil.getUserInfo(token)
         .then(res => {
           if (res.role === 1) {
-            console.log('用户身份合法')
             titleHandler(to)
             next()
           } else {
-            console.log('用户身份不合法')
             titleHandler(to)
             next('/403')
           }
         }).catch(err => {
-          console.log(err)
           titleHandler(to)
           next('/403')
         })

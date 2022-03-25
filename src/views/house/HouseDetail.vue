@@ -109,7 +109,7 @@
               @click="onJoinRentClick"
           >
             <span v-if="roomAvailable" class="text-2xl">加入合租</span>
-            <span v-else class="text-2xl">此房源已满</span>
+            <span v-else class="text-2xl">{{ roomDisabledFlag.msg }}</span>
           </el-link>
         </div>
       </div>
@@ -150,6 +150,7 @@ let roomList = ref({})
 
 let rentRoomId = ref(1)
 let roomAvailable = ref(true)
+let roomDisabledFlag = ref({ msg: '' })
 
 let labels = reactive({
   airConditioner: {
@@ -227,16 +228,22 @@ if (id.value && id.value !== '') {
         // 判断房源是否已满员，以roomList数组中元素的tenement属性是否有值为判定
         switch (roomList.value.length) {
           case 1:
-            roomAvailable.value = !roomList.value[0].tenement
-            break
+            roomAvailable.value = !roomList.value[0].tenement;
+            break;
           case 2:
-            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement)
-            break
+            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement);
+            break;
           case 3:
-            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement && roomList.value[2].tenement)
-            break
+            roomAvailable.value = !(roomList.value[0].tenement && roomList.value[1].tenement && roomList.value[2].tenement);
+            break;
           default:
-            roomAvailable.value = false
+            roomAvailable.value = false;
+            roomDisabledFlag.value.msg = '未知错误';
+        }
+        if (roomAvailable.value) { roomDisabledFlag.value.msg = '房间已满' }
+        if (store.getters.getUserInfo.id === houseInfo.value.creator.id) {
+          roomAvailable.value = false
+          roomDisabledFlag.value.msg = '房东无法自租用'
         }
         // console.log(houseInfo)
       })

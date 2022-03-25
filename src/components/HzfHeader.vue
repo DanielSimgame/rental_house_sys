@@ -110,10 +110,10 @@ export default {
     }
     /**
      * @function onUserCardClick
-     * @description 点击用户卡片
+     * @description 点击用户卡片，打开聊天窗口
      */
     const onUserCardClick = () => {
-      router.push("/user")
+      store.commit("setChatViewVisibility", true);
     };
     /**
      * @function onUserPageClick

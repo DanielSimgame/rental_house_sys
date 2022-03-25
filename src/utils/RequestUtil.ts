@@ -270,8 +270,21 @@ export default {
         }
     },
     /**
-     * @function postSendRentNotice
-     * @description 向发送租房消息
+     * @function getMessageList
+     * @description 获取消息列表
+     * */
+    getMessageList: async (): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/message/list`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
+     * @function postSendMessage
+     * @description 向用户发送私聊
      * @param {Object} data 消息信息
      * @example data = {
      *   "contain": "",
@@ -279,14 +292,18 @@ export default {
      *   "type": "message"
      * }
      * */
-    postSendRentNotice: async (data: Object): Promise<Object> => {
+    postSendMessage: async (data = { contain: "", receiverId: "", type: "message" }): Promise<Object> => {
         const reqUrl = `${store.getters.getApiServer}/message/send`
-        const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
-        if (res.status === 200) {
-            console.log(res)
-            return res;
+        if (data.receiverId === '' || data.receiverId === null || data.receiverId === undefined) {
+            return Promise.reject('receiverId不能为空')
         } else {
-            return Promise.reject(res);
+            const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
+            if (res.status === 200) {
+                console.log(res)
+                return res;
+            } else {
+                return Promise.reject(res);
+            }
         }
     },
 }

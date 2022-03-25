@@ -33,6 +33,7 @@ export default {
   // 发生错误
   SOCKET_ONERROR(state, event) {
     console.error(state, event);
+    wSocketUtil.errorHandler(event);
   },
   // 收到服务端发送的消息
   SOCKET_ONMESSAGE(state, message) {
@@ -46,7 +47,7 @@ export default {
         wSocketUtil.messageHandler(message);
         break;
     }
-    console.log(state.socket.message);
+    // console.log(state.socket.message);
   },
   // 自动重连
   SOCKET_RECONNECT(state, count) {
@@ -63,7 +64,7 @@ export default {
    * @param {Boolean} isVisible 是否可见
    * */
   setChatViewVisibility(state, isVisible) {
-    state.chatView.visibility = isVisible;
+    state.app.chatView = isVisible;
   },
   /**
    * @function setUserRole

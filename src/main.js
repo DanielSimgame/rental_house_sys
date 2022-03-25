@@ -10,18 +10,19 @@ import store from './store';
 
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-import User from "@/utils/User"
 import VueNativeSock from "vue-native-websocket-vue3"
+// import User from "@/utils/User"
+import Storage from "@/utils/basic/Storage";
 
 const wsUrl = import.meta.env.VITE_WSS_URL
 
 export const app = createApp(App)
 
-app.use(router).use(store).use(ElementPlus)
+app.use(store).use(router).use(ElementPlus)
 app.mount('#app')
 
-if (User.getToken() !== null) {
-  app.use(VueNativeSock, `${wsUrl}/message/${User.getToken()}`, {
+if (Storage.get("jwt") !== null) {
+  app.use(VueNativeSock, `${wsUrl}/message/${Storage.get("jwt")}`, {
     store: store,
     format: 'json',
     reconnection: true,

@@ -49,7 +49,7 @@
           <el-divider>
             <span class="text-lg">房东</span>
           </el-divider>
-          <UserCardVue class="border" :user-info="myLandlord" size="large"/>
+          <UserCardVue class="border" :user-info="myLandlord" @click="onLandlordClick" size="large"/>
         </div>
         <div class="row-span-2">
           <el-divider>
@@ -153,7 +153,6 @@ const onQuitRentCLick = () => {
       title: '错误'
     })
   }
-
 }
 
 /**
@@ -197,6 +196,18 @@ const onSetRentInfo = (res = {rentedHouse: null}) => {
   } else {
     myLandlord.value = null
   }
+}
+
+/**
+ * @function onLandlordClick
+ * @description 点击房东按钮
+ * */
+const onLandlordClick = () => {
+  RequestUtil.postSendMessage({contain: 'test message' + new Date(), receiverId: myLandlord.value.id, type: "message"})
+      .then(r => r.text())
+      .then(res => {
+        console.log('post message', res)
+      })
 }
 
 getUserRentInfo()
