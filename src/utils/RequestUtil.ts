@@ -283,6 +283,19 @@ export default {
         }
     },
     /**
+     * @function getNoticeList
+     * @description 获取系统通知列表
+     * */
+    getNoticeList: async (pageNum: Number = 0, pageSize: Number = 10): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/notice/list?pageNum=${pageNum}&pageSize=${pageSize}`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    },
+    /**
      * @function postSendMessage
      * @description 向用户发送私聊
      * @param {Object} data 消息信息
@@ -299,11 +312,24 @@ export default {
         } else {
             const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
             if (res.status === 200) {
-                console.log(res)
                 return res;
             } else {
                 return Promise.reject(res);
             }
         }
     },
+    /**
+     * @function getMessageRead
+     * @description 批量阅读私聊(get请求)
+     * @param {Array} messageIds 通知id数组
+     * */
+    getMessageRead: async (messageIds: Array<string>): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/message/read?messageIds=${messageIds}`
+        const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
+        if (res.status === 200) {
+            return res;
+        } else {
+            return Promise.reject(res);
+        }
+    }
 }

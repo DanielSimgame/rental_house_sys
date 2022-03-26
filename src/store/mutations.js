@@ -41,10 +41,10 @@ export default {
     state.socket.message = message;
     switch (state.socket.message.messageType) {
       case "notice":
-        wSocketUtil.noticeHandler(message);
+        wSocketUtil.noticeHandler(message, state);
         break;
       case "message":
-        wSocketUtil.messageHandler(message);
+        wSocketUtil.messageHandler(message, state);
         break;
     }
     // console.log(state.socket.message);
@@ -56,6 +56,15 @@ export default {
   // 重连错误
   SOCKET_RECONNECT_ERROR(state) {
     state.socket.reconnectError = true;
+  },
+  /**
+   * @function clearNewMessage
+   * @description 新消息
+   * @param {Object} state vuex state
+   * @param {Object} message 消息
+   * */
+  clearNewMessage(state) {
+    state.newMessage.length = 0;
   },
   /**
    * @function setChatViewVisibility

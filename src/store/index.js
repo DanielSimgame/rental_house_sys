@@ -10,6 +10,7 @@ export default createStore({
       apiUrl: import.meta.env.VITE_API_URL || 'https://hzf.keker.ink',
       wssUrl: import.meta.env.VITE_WSS_URL || 'wss://hzf.keker.ink',
       chatView: false,
+      chatNew: {},
     },
     socket: {
       // 连接状态
@@ -23,6 +24,7 @@ export default createStore({
       // 心跳定时器
       heartBeatTimer: 0
     },
+    newMessage: [],
     count: 0,
     userRole: '',
     defaultAvatar: 'https://pics.keker.icu/face.jpg',

@@ -13,7 +13,7 @@
         <router-view />
       </el-main>
     </el-container>
-    <el-dialog v-model="$store.state.app.chatView" title="聊天" width="800px" :modal="false" draggable destroy-on-close>
+    <el-dialog v-model="$store.state.app.chatView" title="聊天" width="800px" :modal="true" draggable destroy-on-close>
       <ChatView></ChatView>
 <!--      <template #footer>-->
 <!--      <span class="dialog-footer">-->
@@ -114,4 +114,5 @@ onBeforeMount(() => {
   left: 0;
   transform: skewX(-18deg);
 }
+
 </style>

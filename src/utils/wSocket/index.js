@@ -1,11 +1,11 @@
 import Notification, {msgDuration, msgType} from "@/utils/basic/Notification";
 
-
 export default {
   /**
    * @function messageHandler
    * @description WebSocket消息处理
    * @param {Object} message 消息
+   * @param {Object} state 状态
    * */
   messageHandler: (message = {
     contain: "",
@@ -17,16 +17,27 @@ export default {
     objectId: "",
     read: false,
     receiverId: ""
-  }) => {
-    Notification.Notify(
-      `<p>来自<strong>${message.creatorId}</strong>的消息</p>
-            <p>${message.contain.substring(0, 50)}</p>`,
-      {title: '新消息提醒', duration: msgDuration.SHORT, type: msgType.INFO, HTML: true})
+  }, state) => {
+    // console.log('messageHandler', message);
+    // 将新消息插入state的newMessage
+    if (message.messageType === "message" && message.creatorId !== "") {
+      // state.commit('setNewMessage', message);
+      state.newMessage.push(message);
+    }
+    // 如果store中聊天框可见性为假，则消息提醒，否则什么也不做
+    if (!state.app.chatView) {
+      Notification.Notify(
+        `<p>来自<strong>${message.creatorId}</strong>的消息</p>
+              <p>${message.contain.substring(0, 50)}</p>`,
+        {title: '新消息提醒', duration: msgDuration.SHORT, type: msgType.INFO, HTML: true}
+      )
+    }
   },
   /**
    * @function noticeHandler
    * @description WebSocket通知处理
    * @param {Object} message 消息
+   * @param {Object} state 状态
    * */
   noticeHandler: (message = {
     contain: "",
@@ -38,7 +49,7 @@ export default {
     objectId: "",
     read: false,
     receiverId: ""
-  }) => {
+  }, state) => {
     // console.log('messageHandler', message)
     Notification.Notify(
       `
