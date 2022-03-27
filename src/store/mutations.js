@@ -61,7 +61,6 @@ export default {
    * @function clearNewMessage
    * @description 新消息
    * @param {Object} state vuex state
-   * @param {Object} message 消息
    * */
   clearNewMessage(state) {
     state.newMessage.length = 0;

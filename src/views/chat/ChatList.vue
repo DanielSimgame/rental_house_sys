@@ -18,23 +18,25 @@
         </div>
       </div>
 
-      <div class="chat-list__body-item mb-1" v-for="(chatUser, index) in chatList.chats" :key="index"
-           @click="onSelectChat(chatUser, index)">
+      <div class="chat-list__body-item mb-1" v-for="(conversation, index) in conversationList" :key="index"
+           @click="onSelectChat(conversation, index)">
         <div class="chat-list__body-item-content cursor-pointer h-full grid grid-cols-3 h-14 border rounded-full
           group hover:bg-indigo-600 hover:text-white p-1 transition-colors">
           <div class="portrait-wrap flex items-center">
-            <el-badge :value="unreadNum[index]" :hidden="unreadNum[index] === 0" :max="10" class="item">
-              <img :src="chatUser.portrait" class="h-12 w-12 rounded-full col-span-1" ondragstart="return false" alt>
+            <el-badge :value="unreadNum[index].num" :hidden="unreadNum[index].num === 0" :max="10" class="item">
+              <!--            <el-badge :value="calcUnreadNumComputed(conversation)" :hidden="calcUnreadNumComputed(conversation) === 0" :max="10" class="item">-->
+              <img :src="conversation.portrait" class="h-12 w-12 rounded-full col-span-1" ondragstart="return false"
+                   alt>
             </el-badge>
           </div>
           <div class="col-span-2 flex flex-col justify-center">
-            <span>{{ chatUser.name }}</span>
+            <span>{{ conversation.name }}</span>
             <span class="chat-list__body-item-contain">{{
-                chatList.chats[index].messageList[chatList.chats[index].messageList.length - 1].contain
+                getLatestMsgInMessageList(conversation.id)
               }}</span>
-<!--            <span class="chat-list__body-item-contain">{{-->
-<!--                chat.messageList[chat.messageList.length - 1].contain-->
-<!--              }}</span>-->
+            <!--            <span class="chat-list__body-item-contain">{{-->
+            <!--                chat.messageList[chat.messageList.length - 1].contain-->
+            <!--              }}</span>-->
           </div>
         </div>
       </div>
@@ -54,41 +56,86 @@
 
 <script setup>
 import RequestUtil from "@/utils/RequestUtil";
-import {onMounted, reactive, watch, watchEffect} from "vue";
+import {computed, nextTick, reactive} from "vue";
 import {MessageBox} from "@element-plus/icons-vue";
 import NotificationImg from '@/assets/images/bell.png';
 import {useStore} from "vuex";
 
 const store = useStore();
+let thisUser = store.getters.getUserInfo;
 
 let emit = defineEmits(['selectChat']);
-let props = defineProps({
-  chats: {
-    type: Array,
-    default: () => {
-      return [
-        {
-          detail: "",
-          gender: "",
-          id: "",
-          messageList: [{
-            contain: "",
-            createdDate: "",
-            creatorId: "",
-            id: "",
-            messageType: "message",
-            read: false,
-            receiverId: "",
-            removedUserIds: [],
-            type: "message"
-          }],
-          name: "",
-          portrait: ""
-        }
-      ]
-    }
+
+let conversationList = reactive([
+  {
+    detail: "",
+    gender: "",
+    id: "",
+    messageList: [{
+      contain: "",
+      createdDate: "",
+      creatorId: "",
+      id: "",
+      messageType: "message",
+      read: false,
+      receiverId: "",
+      removedUserIds: [],
+      type: "message"
+    }],
+    name: "",
+    portrait: ""
   }
-})
+])
+
+/**
+ * @function getNotice
+ * @description 获取通知
+ * */
+let getNotice = () => {
+  RequestUtil.getNoticeList(0, 10)
+      .then(r => r.json())
+      .then(resArr => {
+        if (resArr.length > 0) {
+          if (chatList.notice.messageList[0].id === "") {
+            chatList.notice.messageList.shift()
+          }
+          for (let resKey in resArr) {
+            chatList.notice.messageList.push(resArr[resKey])
+          }
+          return resArr
+        }
+      })
+}
+
+// get notice
+getNotice()
+// get conversation list from server, it's an array.
+RequestUtil.getConversationList()
+    .then(r => r.json())
+    .then(res => {
+      // find the user's conversation by id, and rewrite the conversationList[index]
+      // if the conversation is not found, push it to the list
+      res.forEach(conversation => {
+        let index = conversationList.findIndex(item => item.id === conversation.id);
+        nextTick(() => {
+          // if it's first init, shift empty conversation
+          if (conversationList[0].id === "") {
+            conversationList.shift()
+          }
+          if (unreadNum[0].id === "") {
+            unreadNum.shift()
+          }
+        })
+        if (index === -1) {
+          conversationList.push(conversation);
+          unreadNum.push({id: conversation.id, num: 0})
+        } else {
+          conversationList[index] = conversation;
+          unreadNum[index].id = conversation.id;
+        }
+      })
+    })
+
 let chatList = reactive({
   notice: {
     detail: null,
@@ -127,12 +174,15 @@ let chatList = reactive({
     portrait: ""
   }],
 })
-let unreadNum = reactive([0, 0])
-
-let thisUser = store.getters.getUserInfo
+let unreadNum = reactive([
+  {
+    id: "",
+    num: 0
+  }
+])
 
 /**
- * @function isMyPostChat (computed function)
+ * @function isMyPostChat
  * @description 是我发的聊天信息？
  * @param {String} creatorId 消息创建者id
  * */
@@ -141,126 +191,152 @@ let isMyPostChat = (creatorId) => {
 }
 
 /**
- * @function getMsgListFirst
+ * @function getLatestMsgInMessageList
  * @description 获取消息列表的第一条消息
- * @param {Array} chatUser 聊天对方信息
+ * @param {String} id conversation user id
  * */
-let getMsgListFirst = (chatUser) => {
-  console.log('chatUser', chatUser.messageList.length - 1)
-  return chatUser.messageList[chatUser.messageList.length - 1].contain
-}
+let getLatestMsgInMessageList = computed(() => (id) => {
+  // get the latest message by id in conversationList, and return the message content
+  let index = conversationList.findIndex(item => item.id === id);
+  if (index === -1) {
+    return "";
+  }
+  let messageList = conversationList[index].messageList;
+  if (messageList.length === 0) {
+    return "";
+  }
+  // if the message is start with '发起聊天:', and the msg is sent by this user, return the content without '发起聊天:'
+  if (messageList[messageList.length - 1].contain.startsWith('发起聊天:') && isMyPostChat(messageList[messageList.length - 1].creatorId)) {
+    return messageList[messageList.length - 1].contain.split(':')[1]
+  } else {
+    // return the last message
+    return messageList[messageList.length - 1].contain;
+  }
+})
 
 /**
- * @function calcUnreadNum (computed function)
- * @description 返回未读消息数量（若想让computed可以传参，则必须是返回一个匿名方法，该方法中再定义相关计算方法）
- * @param {Object} chat 聊天对象
- * @param {Number} index 聊天对象在数组中的索引
+ * @function calcUnreadNumComputed
+ * @description 返回未读消息数量
+ * @param {Object} conversation 聊天对话
  * */
-let calcUnreadNum = (chat, index) => {
-  let flag = 0;
-  for (let msgKey in chat.messageList) {
-    if (!isMyPostChat(chat.messageList[msgKey].creatorId) && !chat.messageList[msgKey].read) {
-      flag += 1
+let calcUnreadNumComputed = () => (conversation) => {
+  // calculate the unread message counts in conversationList array
+  // let unreadNum = 0;
+  let messageList = conversation.messageList;
+  for (let i = 0; i < messageList.length; i++) {
+    if (!messageList[i].read) {
+      unreadNum[i].num++;
     }
   }
-  unreadNum[index] = flag;
 }
 
+/**
+ * @function calcUnreadNumComputed
+ * @description 返回未读消息数量
+ * @param {Object} conversation 聊天对话
+ * */
+const calcUnreadNum = (conversation) => {
+  // calculate the unread message counts in conversationList array
+  let count = 0;
+  let messageList = conversation.messageList;
+  for (let i = 0; i < messageList.length; i++) {
+    if (!messageList[i].read) {
+      count ++;
+    }
+  }
+  // write count into unreadNum array, by conversation id
+  let index = unreadNum.findIndex(item => item.id === conversation.id);
+  if (index === -1) {
+    unreadNum.push({id: conversation.id, num: count})
+  } else {
+    unreadNum[index].num = count
+  }
+}
 
 /**
- * @function getNotice
- * @description 获取通知
+ * @function addUnreadMessageCount
+ * @description 增加未读消息数量
+ * @param {String} id creator id
  * */
-let getNotice = () => {
-  RequestUtil.getNoticeList(0, 10)
-      .then(r => r.json())
-      .then(resArr => {
-        if (resArr.length > 0) {
-          if (chatList.notice.messageList[0].id === "") {
-            chatList.notice.messageList.shift()
-          }
-          for (let resKey in resArr) {
-            chatList.notice.messageList.push(resArr[resKey])
-          }
-          return resArr
-        }
-      })
+let addUnreadMessageCount = (id) => {
+  // add unread message count by id
+  let index = unreadNum.findIndex(item => item.id === id);
+  if (index === -1) {
+    unreadNum.push({id: id, num: 1})
+  } else {
+    unreadNum[index].num++
+  }
 }
 
 /**
  * @function getUnread
  * @description 获取未读消息
- * @param {Array} unreadMsgIds 未读消息id数组
- * @param {Object} chat 聊天对象
+ * @param {Array} unreadMsgIds 要处理的未读消息id数组
+ * @param {Object} conversation 聊天对象
  * */
-const getUnread = async (unreadMsgIds, chat) => {
+const getUnread = async (unreadMsgIds, conversation) => {
   await RequestUtil.getMessageRead(unreadMsgIds)
       .then(res => {
         if (res.status === 200) {
-          chat.messageList.forEach(msg => {
-            msg.read = true
-          })
-          if (chat.name !== "系统通知") {
-            // 将消息标志el-badge变为已读
-            calcUnreadNum(chat, chatList.chats.indexOf(chat))
+          // 以聊天对象.消息列表中每一条消息，将消息的read属性设置为true
+          for (let msgKey in conversation.messageList) {
+            if (unreadMsgIds.includes(conversation.messageList[msgKey].id)) {
+              conversation.messageList[msgKey].read = true
+            }
           }
+          calcUnreadNum(conversation)
         }
       })
 }
 
 /**
  * @function onSelectChat
- * @description 点击聊天对象
- * @param {Object} chatUser 聊天对方信息
- * @param {String | Number} index 聊天对象在数组中的索引
+ * @description 点击聊天对象事件
+ * @param {Object} conversation 与某人的聊天对话(聊天对象)
+ * @param {String | Number} index 聊天对象在conversationList中的索引
  * */
-function onSelectChat(chatUser, index) {
-  emit('selectChat', chatUser)
+function onSelectChat(conversation, index) {
+  // 向父组件传递聊天对象
+  emit('selectChat', conversation)
   // 未读消息的id数组
   let unreadMsgIds = [];
-  for (let msgKey in chatUser.messageList) {
-    if (!chatUser.messageList[msgKey].read && !isMyPostChat(chatUser.messageList[msgKey].creatorId)) {
-      unreadMsgIds.push(chatUser.messageList[msgKey].id)
+  // 将聊天对象的消息列表中的未读消息id放入unreadMsgIds数组中
+  for (let msgKey in conversation.messageList) {
+    if (!conversation.messageList[msgKey].read && !isMyPostChat(conversation.messageList[msgKey].creatorId)) {
+      unreadMsgIds.push(conversation.messageList[msgKey].id)
     }
   }
-  getUnread(unreadMsgIds, chatUser)
+  getUnread(unreadMsgIds, conversation)
 }
 
 /**
- * @function addChatRecord
- * @description 添加聊天记录
+ * @function pushNewMessage
+ * @description 当收到后端发送新的单条消息时，调用此方法添加消息到ConversationList[index].messageList中
+ * @param {Object} newMessage 新的单条消息
  * */
-function addChatRecord(newChat) {
-  console.log('newChat', newChat)
-  // push newChat to chatList.chats, which item includes id same as newChat creatorId.
-
+const pushNewMessage = (newMessage = {
+  contain: "",
+  createdDate: "",
+  creatorId: "",
+  id: "",
+  messageType: "message",
+  read: false,
+  receiverId: "",
+  removedUserIds: [],
+  type: "message"
+}) => {
+  for (let chatsKey in conversationList) {
+    if (newMessage.creatorId === conversationList[chatsKey].id && conversationList[chatsKey].messageList) {
+      conversationList[chatsKey].messageList.push(newMessage)
+    }
+  }
 }
 
-// 监听聊天列表选择聊天对象
-watch(
-    props.chats,
-    (newVal) => {
-      // console.log(newVal)
-      // for (let chatKey in chatList.chats) {
-      //   calcUnreadNum(chatList.chats[chatKey], chatKey)
-      // }
-      // console.log(chatList.chats)
-    }
-)
-
-watchEffect(() => {
-  chatList.chats = props.chats;
-})
-
-onMounted(() => {
-  getNotice()
-})
-
 defineExpose({
-  props,
-  data:() => chatList,
+  data: () => chatList,
   methods: {
-    addChatRecord,
+    pushNewMessage,
+    addUnreadMessageCount
   }
 })
 </script>

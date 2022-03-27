@@ -27,9 +27,10 @@ let pageData = reactive({
  * @description 初始化聊天列表
  * */
 const initChatList = async () => {
-  pageData.chats = await RequestUtil.getMessageList()
+  pageData.chats = await RequestUtil.getConversationList()
       .then(r => r.json())
       .then(res => {
+
         // console.log(res);
         return res;
       });
@@ -42,7 +43,6 @@ const initChatList = async () => {
  * */
 const chatListItemSelected = (chat) => {
   pageData.currentChat = chat;
-  console.log('插入ChatBoard.vue的currentChat array', pageData.currentChat);
   // console.log('current chat', pageData.currentChat)
 }
 
@@ -53,18 +53,20 @@ onMounted(() => {
 // 从store监听新消息
 watch(
     store.getters.getNewMsgArr,
-    (newMessage) => {
-      if (newMessage.length > 0) {
+    (newMessageList) => {
+      if (newMessageList.length > 0) {
         // 将获取到的新消息插入到对应的聊天对象currenChat的messageList中
-        for (let msgKey in newMessage) {
-          let msg = newMessage[msgKey];
-          if (pageData.currentChat !== null && pageData.currentChat.id === msg.creatorId) {
-            pageData.currentChat.messageList.push(msg);
+        for (let msgKey in newMessageList) {
+          let newMsg = newMessageList[msgKey];
+          if (pageData.currentChat !== null && pageData.currentChat.id === newMsg.creatorId) {
+            pageData.currentChat.messageList.push(newMsg);
           }
           // 如果用户只打开了聊天窗口但没打开聊天对象的话，则将新消息插入到chats中
           else if (pageData.currentChat === null) {
-            pageData.chats.push(msg);
-            chatListRef.value.methods.addChatRecord(msg)
+            pageData.chats.push(newMsg);
+            chatListRef.value.methods.pushNewMessage(newMsg)
+            // add unread message count
+            chatListRef.value.methods.addUnreadMessageCount(newMsg.creatorId);
           }
           if (chatBoardRef !== null) {
             nextTick(() => {

@@ -73,6 +73,7 @@
         <div class="house-info__tenants grid grid-cols-3 gap-5">
           <UserCardVue
               v-for="item in myTenants"
+              @click="onUserCardClick(item.id)"
               :key="item.id"
               class="border"
               :user-info="item"
@@ -98,9 +99,14 @@ import houseImg from '@/assets/images/roomPic.jpg'
 import UserCardVue from './UserCard.vue'
 import RequestUtil from "@/utils/RequestUtil";
 import Notification, {msgDuration, msgType} from "@/utils/basic/Notification";
+import {useStore} from "vuex";
 
 const route = useRoute();
 const router = useRouter();
+const store = useStore()
+let thisUser = store.getters.getUserInfo;
+
+
 
 let showDeleteConfirm = ref(false);
 
@@ -176,6 +182,24 @@ onMounted(() => {
     })
   }
 })
+
+/**
+ * @function onUserCardClick
+ * @description 点击用户卡片，打开聊天窗口
+ * @param {number} targetUserId 用户id
+ */
+const onUserCardClick = (targetUserId) => {
+  // if not this user, open chat window and start chat with creator.id
+
+  if (thisUser.id !== targetUserId) {
+    RequestUtil.postSendMessage({
+      receiverId: targetUserId,
+      contain: `发起聊天:用户${thisUser.name}向您发起了聊天`,
+      type: 'message'
+    })
+    store.commit("setChatViewVisibility", true)
+  }
+};
 
 /**
  * @function onHouseEditClick

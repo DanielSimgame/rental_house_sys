@@ -270,10 +270,10 @@ export default {
         }
     },
     /**
-     * @function getMessageList
-     * @description 获取消息列表
+     * @function getConversationList
+     * @description 获取对话列表
      * */
-    getMessageList: async (): Promise<Object> => {
+    getConversationList: async (): Promise<Object> => {
         const reqUrl = `${store.getters.getApiServer}/message/list`
         const res: any = await Network.fetchGet(reqUrl, { token: User.getToken() });
         if (res.status === 200) {
