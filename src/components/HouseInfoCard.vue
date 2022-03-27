@@ -27,7 +27,7 @@
         >{{ obj.text }}</el-tag>
       </div>
       <div class="house-info__landlord col-span-1">
-        <UserCard :user-info="houseInfo.creator" size="default" />
+        <UserCard :user-info="houseInfo.creator" @click="onUserCardClick(houseInfo.creator.id)" size="default" />
       </div>
     </div>
   </div>
@@ -37,6 +37,11 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import houseImg from '@/assets/images/roomPic.jpg'
 import UserCard from './UserCard.vue';
+import {useStore} from "vuex";
+import RequestUtil from "@/utils/RequestUtil";
+
+const store = useStore()
+let thisUser = store.getters.getUserInfo;
 
 const imgUrl = ref(houseImg)
 const tagColors = ['', 'success', 'info', 'warning', 'danger']
@@ -145,6 +150,24 @@ let props = defineProps({
     },
   },
 })
+
+/**
+ * @function onUserCardClick
+ * @description 点击用户卡片，打开聊天窗口
+ * @param {number} targetUserId 用户id
+ */
+const onUserCardClick = (targetUserId) => {
+  // if not this user, open chat window and start chat with creator.id
+
+  if (thisUser.id !== targetUserId) {
+    RequestUtil.postSendMessage({
+      receiverId: targetUserId,
+      contain: `发起聊天:用户${thisUser.name}向您发起了聊天`,
+      type: 'message'
+    })
+    store.commit("setChatViewVisibility", true)
+  }
+};
 
 onMounted(() => {
   setTagChinese()

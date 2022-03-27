@@ -10,7 +10,7 @@
         <h1 class="text-4xl text text-orange-500">¥{{ roomPrice }}元/月</h1>
         <div class="flex items-center mt-1">
           <span class="text-gray-400 mr-4">房东</span>
-          <UserCardVue :userInfo="houseCreator" size="large"/>
+          <UserCardVue :userInfo="houseCreator" @click="onUserCardClick(houseCreator.id)" size="large"/>
         </div>
         <div class="house-detail__specs flex items-center mt-1 mb-2">
           <span class="text-gray-400 w-16">配置</span>
@@ -131,11 +131,12 @@ import RequestUtil from '@/utils/RequestUtil';
 import {useRoute, useRouter} from 'vue-router';
 import {onMounted, reactive, ref, watch} from 'vue';
 import {useStore} from 'vuex';
-import Notification, {msgType, msgDuration} from '@/utils/basic/Notification';
+import Notification, {msgDuration, msgType} from '@/utils/basic/Notification';
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
+let thisUser = store.getters.getUserInfo;
 
 let id = ref(route.query.id)
 let houseInfo = reactive({})
@@ -150,7 +151,7 @@ let roomList = ref({})
 
 let rentRoomId = ref(1)
 let roomAvailable = ref(true)
-let roomDisabledFlag = ref({ msg: '' })
+let roomDisabledFlag = ref({msg: '房屋已满'})
 
 let labels = reactive({
   airConditioner: {
@@ -240,7 +241,9 @@ if (id.value && id.value !== '') {
             roomAvailable.value = false;
             roomDisabledFlag.value.msg = '未知错误';
         }
-        if (roomAvailable.value) { roomDisabledFlag.value.msg = '房间已满' }
+        if (roomAvailable.value) {
+          roomDisabledFlag.value.msg = '房间已满'
+        }
         if (store.getters.getUserInfo.id === houseInfo.value.creator.id) {
           roomAvailable.value = false
           roomDisabledFlag.value.msg = '房东无法自租用'
@@ -250,6 +253,27 @@ if (id.value && id.value !== '') {
 } else {
   Notification.Notify('房源id为空，请检查网址是否正确。', {title: '错误', type: msgType.ERROR, duration: msgDuration.LONG})
 }
+
+/**
+ * @function onUserCardClick
+ * @description 点击用户卡片，打开聊天窗口
+ * @param {number} targetUserId 用户id
+ */
+const onUserCardClick = (targetUserId) => {
+  // if not this user, open chat window and start chat with creator.id
+
+  if (thisUser.id !== targetUserId) {
+    RequestUtil.postSendMessage({
+      receiverId: targetUserId,
+      contain: `发起聊天:用户${thisUser.name}向您发起了聊天`,
+      type: 'message'
+    })
+        .then(res => res.text())
+        .then(r => {
+          store.commit("setChatViewVisibility", true)
+        })
+  }
+};
 
 /**
  * @function setTagChinese

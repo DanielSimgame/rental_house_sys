@@ -49,7 +49,7 @@
           <el-divider>
             <span class="text-lg">房东</span>
           </el-divider>
-          <UserCardVue class="border" :user-info="myLandlord" size="large"/>
+          <UserCardVue class="border" :user-info="myLandlord" @click="onUserCardClick(myLandlord.id)" size="large"/>
         </div>
         <div class="row-span-2">
           <el-divider>
@@ -58,6 +58,7 @@
           <UserCardVue
               v-for="(item, index) in myRoommates"
               :key="item.id"
+              @click="onUserCardClick"
               class="border"
               :class="index !== myRoommates.length - 1 ? 'mb-3' : ''"
               :user-info="item"
@@ -87,6 +88,12 @@ import RequestUtil from '@/utils/RequestUtil';
 import User from '@/utils/User'
 import TopTitle from '@/components/TopTitle.vue'
 import UserCardVue from '@/components/UserCard.vue';
+
+import {useStore} from "vuex";
+
+const store = useStore()
+let thisUser = store.getters.getUserInfo;
+
 
 let popupQuitRent = ref(false)
 let quitBtnLoading = ref(false)
@@ -154,6 +161,24 @@ const onQuitRentCLick = () => {
     })
   }
 }
+
+/**
+ * @function onUserCardClick
+ * @description 点击用户卡片，打开聊天窗口
+ * @param {number} targetUserId 用户id
+ */
+const onUserCardClick = (targetUserId) => {
+  // if not this user, open chat window and start chat with creator.id
+
+  if (thisUser.id !== targetUserId) {
+    RequestUtil.postSendMessage({
+      receiverId: targetUserId,
+      contain: `发起聊天:用户${thisUser.name}向您发起了聊天`,
+      type: 'message'
+    })
+    store.commit("setChatViewVisibility", true)
+  }
+};
 
 /**
  * @function getUserRentInfo

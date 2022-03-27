@@ -11,7 +11,7 @@
         <div class="chat-board__msg-item flex justify-start mx-2"
              :class="msg.creatorId === thisUser.id ? 'flex-row-reverse' : 'flex-row'"
              v-for="msg in componentData.messageList">
-          <div class="chat-board__msg-inner max-w-96">
+          <div class="chat-board__msg-inner max-w-96" v-if="!isStartChat(msg)">
             <div class="contact-name mb-0.5" :class="isMyPostChat(msg.creatorId) ? 'text-right' : 'text-left'">
               {{ isMyPostChat(msg.creatorId) ? '我' : props.chat.name }}
             </div>
@@ -19,6 +19,11 @@
                 class="msg-contain border rounded-xl border-gray-500 mb-2 p-2"
                 :class="isMyPostChat(msg.creatorId) ? 'bg-green-500 text-white' : 'bg-white text-black'">
               {{ msg.contain }}
+            </div>
+          </div>
+          <div class="chat-board__msg-inner max-w-96 mx-auto" v-else-if="isStartChat(msg) && !isMyPostChat(msg.creatorId)">
+            <div class="msg-contain rounded-xl bg-gray-400 mb-2 px-2 py-1 text-white">
+              {{ msg.contain.replace("发起聊天:","") }}
             </div>
           </div>
           <!--          <div class="chat-board__msg-portrait">-->
@@ -98,11 +103,23 @@ let isMyPostChat = computed(function () {
 })
 
 /**
+ * @function isStartChat (computed function)
+ * @description 是发起聊天的标记？
+ * @param {Object} msg 消息
+ * */
+let isStartChat = computed (() => (msg) => {
+  let _startWith = msg.contain.toString()
+  return typeof _startWith === "string" && _startWith.startsWith("发起聊天:");
+})
+
+/**
  * @function scrollToChatBottom
  * @description 滚动到聊天框底部
  * */
 const scrollToChatBottom = () => {
-  msgBoxRef.value.scrollTop = msgBoxRef.value.scrollHeight;
+  if (props.chat !== null) {
+    msgBoxRef.value.scrollTop = msgBoxRef.value.scrollHeight;
+  }
 }
 
 /**

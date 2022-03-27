@@ -14,7 +14,7 @@
       <transition name="el-fade-in-linear">
         <div class="text-center" v-if="isSearched">
           <div class="text-xs">房东信息</div>
-          <UserCardVue :user-info="landlordInfo" size="large"/>
+          <UserCardVue :user-info="landlordInfo" @click="onUserCardClick(landlordInfo.id)" size="large"/>
         </div>
       </transition>
     </div>
@@ -84,6 +84,12 @@ import {Search, Loading} from "@element-plus/icons-vue";
 import MyRealEstateInfoCardVue from '@/components/MyRealEstateInfoCard.vue'
 import {onMounted, reactive, ref} from "vue";
 import RequestUtil, {getHouseListType} from "@/utils/RequestUtil";
+import {useStore} from "vuex";
+
+const store = useStore()
+let thisUser = store.getters.getUserInfo;
+
+
 
 // pageData存放动态刷新的数据
 let pageData = reactive({
@@ -125,6 +131,24 @@ const getRealEstateList = (pageNum = 0, pageSize = 10) => {
         isLoading.value = false
       })
 }
+
+/**
+ * @function onUserCardClick
+ * @description 点击用户卡片，打开聊天窗口
+ * @param {number} targetUserId 用户id
+ */
+const onUserCardClick = (targetUserId) => {
+  // if not this user, open chat window and start chat with creator.id
+
+  if (thisUser.id !== targetUserId) {
+    RequestUtil.postSendMessage({
+      receiverId: targetUserId,
+      contain: `发起聊天:用户${thisUser.name}向您发起了聊天`,
+      type: 'message'
+    })
+    store.commit("setChatViewVisibility", true)
+  }
+};
 
 onMounted(() => {
   isLoading.value = false
