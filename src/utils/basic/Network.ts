@@ -63,7 +63,7 @@ export default {
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': headers['Content-Type'] ? headers['Content-Type'] : 'application/json',
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 ...headers
             },

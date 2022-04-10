@@ -11,14 +11,16 @@
           </div>
           <div class="col-span-2 flex flex-col justify-center">
             <span>{{ chatList.notice.name }}</span>
-            <span class="chat-list__body-item-contain">{{
-                chatList.notice.messageList[chatList.notice.messageList.length - 1].contain
-              }}</span>
+            <span class="chat-list__body-item-contain">
+              {{ chatList.notice.messageList[chatList.notice.messageList.length - 1].contain }}
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="chat-list__body-item mb-1" v-for="(conversation, index) in conversationList" :key="index"
+      <div class="chat-list__body-item mb-1"
+           v-if="chatList.chats.length !== 1 && chatList.chats[0].id !== ''"
+           v-for="(conversation, index) in conversationList" :key="index"
            @click="onSelectChat(conversation, index)">
         <div class="chat-list__body-item-content cursor-pointer h-full grid grid-cols-3 h-14 border rounded-full
           group hover:bg-indigo-600 hover:text-white p-1 transition-colors">
@@ -31,16 +33,18 @@
           </div>
           <div class="col-span-2 flex flex-col justify-center">
             <span>{{ conversation.name }}</span>
-            <span class="chat-list__body-item-contain">{{
-                getLatestMsgInMessageList(conversation.id)
-              }}</span>
+            <span class="chat-list__body-item-contain">
+              {{ getLatestMsgInMessageList(conversation.id) }}
+            </span>
             <!--            <span class="chat-list__body-item-contain">{{-->
             <!--                chat.messageList[chat.messageList.length - 1].contain-->
             <!--              }}</span>-->
           </div>
         </div>
       </div>
-      <div class="chat-list__empty text-center flex-col justify-center items-center" v-if="chatList.chats.length === 0">
+      <div
+          class="chat-list__empty text-center flex-col justify-center items-center"
+          v-if="chatList.chats.length === 1 && chatList.chats[0].id === ''">
         <div class="chat-list__empty-icon">
           <el-icon name="chat-empty" :size="64">
             <MessageBox/>
@@ -214,21 +218,21 @@ let getLatestMsgInMessageList = computed(() => (id) => {
   }
 })
 
-/**
- * @function calcUnreadNumComputed
- * @description 返回未读消息数量
- * @param {Object} conversation 聊天对话
- * */
-let calcUnreadNumComputed = () => (conversation) => {
-  // calculate the unread message counts in conversationList array
-  // let unreadNum = 0;
-  let messageList = conversation.messageList;
-  for (let i = 0; i < messageList.length; i++) {
-    if (!messageList[i].read) {
-      unreadNum[i].num++;
-    }
-  }
-}
+// /**
+//  * @function calcUnreadNumComputed
+//  * @description 返回未读消息数量
+//  * @param {Object} conversation 聊天对话
+//  * */
+// let calcUnreadNumComputed = () => (conversation) => {
+//   // calculate the unread message counts in conversationList array
+//   // let unreadNum = 0;
+//   let messageList = conversation.messageList;
+//   for (let i = 0; i < messageList.length; i++) {
+//     if (!messageList[i].read) {
+//       unreadNum[i].num++;
+//     }
+//   }
+// }
 
 /**
  * @function calcUnreadNumComputed

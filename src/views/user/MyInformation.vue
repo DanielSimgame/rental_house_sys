@@ -231,8 +231,6 @@ onMounted(() => {
   if (store.getters.getUserInfo.id !== "") {
     applyUserInfo(store.getters.getUserInfo)
   }
-  // store.getters.getUserInfo
-  // fileData = new FormData(document.querySelector("#imgInput"))
 })
 
 watch(() => store.getters.getUserInfo, (newVal) => {
