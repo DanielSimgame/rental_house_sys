@@ -7,8 +7,10 @@ export default createStore({
   state: {
     app: {
       title: import.meta.env.VITE_APP_TITLE || '合租房管理系统',
-      apiUrl: import.meta.env.VITE_API_URL || 'https://hzf.keker.ink',
-      wssUrl: import.meta.env.VITE_WSS_URL || 'wss://hzf.keker.ink',
+      apiUrl: import.meta.env.VITE_API_URL || 'https://hzf.api.keker.icu',
+      // apiUrl: import.meta.env.VITE_API_URL || 'https://hzf.keker.ink',
+      // wssUrl: import.meta.env.VITE_WSS_URL || 'wss://hzf.keker.ink',
+      wssUrl: import.meta.env.VITE_WSS_URL || 'wss://hzf.api.keker.icu',
       chatView: false,
       chatNew: {},
     },
@@ -27,7 +29,8 @@ export default createStore({
     newMessage: [],
     count: 0,
     userRole: '',
-    defaultAvatar: 'https://pics.keker.icu/face.jpg',
+    // defaultAvatar: null,
+    // defaultAvatar: 'https://pics.keker.icu/face.jpg',
     userInfo: {
       id: "",
       name: "",
@@ -38,7 +41,7 @@ export default createStore({
       gender: "",
       role: -1,
       portrait: "",
-      owndHouseIdList: [],
+      ownedHouseIdList: [],
       rentedHouseIdList: []
     },
   },

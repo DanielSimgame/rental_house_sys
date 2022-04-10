@@ -113,7 +113,7 @@ let signupForm = reactive({
   gender: "",
   password: "",
   phone: "",
-  portrait: "",
+  portrait: null,
   role: 0,
   username: ""
 })
@@ -125,10 +125,6 @@ let isPhoneAvailable = ref(true)
 let isEmailAvailable = ref(true)
 let eulaAgreed = ref(false)
 
-onMounted(() => {
-  signupForm.portrait = store.getters.getDefaultAvatar
-})
-
 /**
  * @function onInputPhoneBlur
  * @description 手机号输入框失去焦点时触发
@@ -137,11 +133,7 @@ const onInputPhoneBlur = async () => {
   const phone = signupForm.phone
   RequestUtil.getPhoneAvailability(phone)
       .then(res => {
-        if (res.status === 200) {
-          isPhoneAvailable.value = true
-        } else {
-          isPhoneAvailable.value = false
-        }
+        isPhoneAvailable.value = res.status === 200;
       })
 }
 /**

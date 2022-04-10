@@ -8,6 +8,18 @@ export const getHouseListType = {
     GET_BY_PRICE: 3,
 }
 
+interface UserInfo {
+    detail: string,
+    email: string,
+    gender: string,
+    id: string,
+    name: string,
+    phone: string,
+    portrait: string,
+    role: number,
+    username: string
+}
+
 export default {
     /**
      * @function postLogin
@@ -331,5 +343,52 @@ export default {
         } else {
             return Promise.reject(res);
         }
-    }
+    },
+    /**
+     * @function postUserUpdate
+     * @description 修改用户信息
+     * @param {Object} data 用户信息
+     * @example data = {
+     *   detail: "",
+     *   email: "",
+     *   gender: "",
+     *   id: "",
+     *   name: "",
+     *   phone: "",
+     *   portrait: "",
+     *   role: 0,
+     *   username: ""
+     * }
+     * */
+    postUserUpdate: async (data: UserInfo): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/user/update`
+        if ((data.name !== "" || null || undefined) && (data.id !== "" || null || undefined)) {
+            const res: any = await Network.fetchPost(reqUrl, { token: User.getToken() }, data);
+            if (res.status === 200) {
+                return res;
+            } else {
+                return Promise.reject(res);
+            }
+        } else {
+            return Promise.reject('name或id不能为空')
+        }
+    },
+    /**
+     * @function postImage
+     * @description 上传图片
+     * @param {FormData} img 图片FormData
+     * */
+    postImage: async (img: FormData): Promise<Object> => {
+        const reqUrl = `${store.getters.getApiServer}/file/image`
+        if (img !== null || undefined) {
+            const res: any = await Network.fetchPostFile(reqUrl, { token: User.getToken() }, img);
+            if (res.status === 200) {
+                return res;
+            } else {
+                return Promise.reject(res);
+            }
+        } else {
+            return Promise.reject('图片不能为空')
+        }
+    },
 }

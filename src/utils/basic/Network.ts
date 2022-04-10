@@ -63,13 +63,47 @@ export default {
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': headers['Content-Type'] ? headers['Content-Type'] : 'application/json',
                 'Accept': 'application/json',
                 ...headers
             },
             mode: ReqMode,
             body: JSON.stringify(data)
         }
+        const request = await fetch(url, options);
+        let resultPromise = Promise.race([request, abortPromise]);
+
+        setTimeout(() => { abort(); }, timeout);
+        return resultPromise.then(response => {
+            clearTimeout(timeout);
+            return response;
+        });
+    },
+    /**
+     * @function fetchPostFile
+     * @description fetchAPI进行POST请求上传文件。
+     * @param {string} url API的地址
+     * @param {Object | null} headers 请求头
+     * @param {FormData} data 要发送的FormData对象
+     * @param {Number} timeout 超时时间，默认为5000ms
+     * */
+    fetchPostFile: async (
+        url: string = '',
+        headers: object | null = null,
+        data: FormData,
+        timeout: number = 5000
+    ) => {
+        const options = {
+            method: 'POST',
+            headers: {
+                // 'Content-Type': 'form-data',
+                // 'Accept': 'application/json',
+                ...headers
+            },
+            mode: ReqMode,
+            body: data
+        }
+
         const request = await fetch(url, options);
         let resultPromise = Promise.race([request, abortPromise]);
 
