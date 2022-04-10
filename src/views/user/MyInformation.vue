@@ -115,11 +115,6 @@ let pageData = reactive({
 
 let fileData = null
 
-onMounted(() => {
-  fileData = new FormData()
-  // fileData = new FormData(document.querySelector("#imgInput"))
-})
-
 const handlePortraitChange = (event) => {
   // console.log('handlePortraitChange', arg)
   pageData.changeFlag = true
@@ -213,19 +208,36 @@ const onSubmitClick = () => {
   })
 }
 
+/**
+ * @function applyUserInfo
+ * @description 初始化用户信息
+ */
+const applyUserInfo = (userInfo) => {
+  userInfoForm.detail = userInfo.detail
+  userInfoForm.email = userInfo.email
+  userInfoForm.gender = userInfo.gender
+  userInfoForm.id = userInfo.id
+  userInfoForm.name = userInfo.name
+  userInfoForm.phone = userInfo.phone
+  userInfoForm.portrait = userInfo.portrait
+  userInfoForm.role = userInfo.role
+  userInfoForm.username = userInfo.username
+  pageData.usernameReadonly = userInfo.username
+  pageData.userIdReadonly = userInfo.id
+}
+
+onMounted(() => {
+  fileData = new FormData()
+  if (store.getters.getUserInfo.id !== "") {
+    applyUserInfo(store.getters.getUserInfo)
+  }
+  // store.getters.getUserInfo
+  // fileData = new FormData(document.querySelector("#imgInput"))
+})
+
 watch(() => store.getters.getUserInfo, (newVal) => {
   if (newVal.id !== "") {
-    userInfoForm.detail = newVal.detail
-    userInfoForm.email = newVal.email
-    userInfoForm.gender = newVal.gender
-    userInfoForm.id = newVal.id
-    userInfoForm.name = newVal.name
-    userInfoForm.phone = newVal.phone
-    userInfoForm.portrait = newVal.portrait
-    userInfoForm.role = newVal.role
-    userInfoForm.username = newVal.username
-    pageData.usernameReadonly = newVal.username
-    pageData.userIdReadonly = newVal.id
+    applyUserInfo(newVal)
   }
 })
 </script>
