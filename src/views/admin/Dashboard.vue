@@ -12,7 +12,7 @@
         </div>
       </transition>
       <transition name="el-fade-in-linear">
-        <div class="text-center" v-if="isSearched">
+        <div class="text-center" v-if="isSearched && pageData.userId !== ''">
           <div class="text-xs">房东信息</div>
           <UserCardVue :user-info="landlordInfo" @click="onUserCardClick(landlordInfo.id)" size="large"/>
         </div>
@@ -24,7 +24,7 @@
       <div class="search__wrap grid grid-cols-6 pb-5 gap-5">
         <el-input class="col-span-5" v-model="pageData.userId" size="large" clearable
                   placeholder="输入用户id搜索用户上架房源，留空则查询全部租户信息"></el-input>
-        <el-button type="primary" size="large" @click="getRealEstateList(0, 10)">
+        <el-button type="primary" size="large" @click="getRealEstateList(0, 20)">
           <el-icon>
             <Search/>
           </el-icon>

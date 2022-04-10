@@ -7,7 +7,9 @@
         <el-link
             :underline="false"
             @click="onSubmitHandler"
-            class="query-btn inline-flex w-full h-14 items-center justify-center rounded-md border border-transparent bg-indigo-600 text-base font-medium leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
+            class="query-btn inline-flex w-full h-14 items-center justify-center
+             rounded-md border border-transparent bg-indigo-600 text-base font-medium
+             leading-6 text-white transition duration-150 ease-in-out hover:bg-indigo-500 focus:outline-none"
         >
           <span class="text-2xl flex flex-row justify-center items-center">
             <el-icon>
@@ -122,7 +124,7 @@
             maxlength="400"
             show-word-limit
             :autosize="{ minRows: 3, maxRows: 5 }"
-            placeholder="请输入房源简介（例如：房源小区位置，周围是否有公共交通，房源楼层，最近的学校、超市、医院等信息，或者是上一栏配置中未提及的事物。请不要填写您的手机号、微信等联系方式或敏感信息）"></el-input>
+            :placeholder="descPlaceholder"></el-input>
       </el-form-item>
     </el-form>
 
@@ -131,16 +133,18 @@
       <h2 class="text-2xl">房间列表</h2>
     </el-divider>
     <div
-        class="room-list__wrap grid 2xl:grid-cols-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5"
+        class="room-list__wrap px-5 grid 2xl:grid-cols-3 xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-5"
     >
       <div
-          class="room-list__item mx-auto overflow-hidden relative group w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
+          class="room-list__item mx-auto overflow-hidden relative group w-full bg-white
+          border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl
+          text-black hover:text-white hover:-translate-y-1 transition-all"
           v-for="(item, index) in newHouseDTO.roomList"
           :key="index"
       >
-        <div class="room-list__item-func-wrap cursor-pointer bg-orange-600 w-6 absolute top-0 right-0
+        <div class="room-list__item-func-wrap z-50 cursor-pointer bg-orange-600 w-6 absolute top-0 right-0
         transition-all hover:scale-150 hover:-translate-x-1 hover:translate-y-1"
-             @click="onRemoveRoomClick(index)">
+             @click="onRemoveRoomClick(index, newHouseDTO.roomList)">
           <el-button
               title="删除"
               type="text"
@@ -155,11 +159,34 @@
         <div class="flex flex-col items-center">
           <div class="flex items-center">
             <img
-                class="mb-2 rounded-xl md:w-80 lg:w-96 xl:w-96 2xl:w-96"
-                :src="(newHouseDTO.roomList[index].pictureUrlList.length === 0) ? houseImg : item.pictureUrlList[0]"
+                v-if="item.pictureUrlList.length > 0"
+                class="mb-2 rounded-xl w-52 h-28"
+                :src="item.pictureUrlList[0]"
                 alt
             />
-            <!-- :src="(item.pictureUrlList.length === 0) ? houseImg : item.pictureUrlList[index]" -->
+
+            <el-upload
+                drag
+                :action="`${$store.getters.getApiServer}/file/image`"
+                :headers="{token: User.getToken()}"
+                :show-file-list="false"
+                accept="image/jpeg,image/jpg,image/png,image/bmp"
+                :on-preview="onRoomPicPreview"
+                :on-success="onRoomPicSuccess"
+                :on-error="onRoomPicError"
+                :before-upload="beforeRoomPicUpload(index)"
+                v-else
+                class="cursor-pointer text-center flex flex-col justify-center"
+            >
+              <el-icon class="el-icon--upload">
+                <UploadFilled/>
+              </el-icon>
+              <div class="el-upload__text">
+                <p>把文件拖动到此处，或者<em>点击此处上传</em></p>
+                <p>jpg,jpeg,png,bmp格式的图片，且不超过2MB</p>
+              </div>
+            </el-upload>
+
           </div>
           <div class="flex items-center my-2 w-52">
             <el-input
@@ -192,7 +219,9 @@
 
       <el-button type="text" class="ml-2" style="height: 100%;">
         <div
-            class="room-list__item flex flex-col justify-between items-center overflow-hidden relative group h-full w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl text-black hover:text-white hover:-translate-y-1 transition-all"
+            class="room-list__item flex flex-col justify-between items-center overflow-hidden relative group h-full
+            w-64 bg-white border-slate-200 border hover:bg-indigo-600 rounded-xl p-5 md:p-3 hover:shadow-xl
+            text-black hover:text-white hover:-translate-y-1 transition-all"
             @click="onAddRoomClick"
         >
           <span class="my-5 text-xl">点击新增一个房间</span>
@@ -201,41 +230,43 @@
       </el-button>
     </div>
 
+    <el-dialog
+        title="房间图片预览"
+        v-model="roomPicDialogVisible"
+        width="80%"
+        destroy-on-close>
+      <img
+          :src="roomPicDialogUrl"
+          alt=""
+          class="w-full h-full object-cover"/>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import {Plus, CloseBold} from '@element-plus/icons-vue'
+import {CloseBold, Plus, UploadFilled} from '@element-plus/icons-vue'
 import RequestUtil from '@/utils/RequestUtil'
-import {onMounted, reactive, ref, watch} from 'vue'
+import User from "@/utils/User";
+import {reactive, ref, watch} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import TopTitle from '@/components/TopTitle.vue'
-import houseImg from '@/assets/images/roomPic.jpg'
+// import houseImg from '@/assets/images/roomPic.jpg'
 import Notification, {msgType} from '@/utils/basic/Notification'
 
+const descPlaceholder = '请输入房源简介（例如：房源小区位置，周围是否有公共交通，房源楼层，最近的学校、' +
+    '超市、医院等信息，或者是上一栏配置中未提及的额外配置。请不要填写您的手机号、微信等联系方式或敏感信息）'
+
+let roomPicDialogVisible = ref(false)
+let roomPicDialogUrl = ref('')
+let roomPicUploadIndex = ref(0)
 const route = useRoute()
 const router = useRouter()
 let checkbox = ref(null)
-// let houseSpec = reactive(['空调', '阳台'])
 let provinceSelector = ref(null)
 let isProvinceDisabled = ref(true)
 let provinceList = ref('') // 这个数据是组件初始化created异步加载的数据
 let cityList = ref('')
 let districtList = ref('')
-
-// 暂时不做表单验证
-// const rules = reactive({
-//   region: [
-//     { required: false, message: '请选择地区', trigger: 'blur' }
-//   ],
-//   address: [
-//     { required: false, message: '请输入地址', trigger: 'blur' }
-//   ],
-//   title: [
-//     { required: false, message: '请输入描述', trigger: 'blur' },
-//     { min: 5, max: 20, message: '描述在5到20字之间', trigger: 'blur' }
-//   ]
-// })
 
 // 经纬度不填则默认天安门的经纬度
 let newHouseDTO = reactive({
@@ -325,22 +356,7 @@ const labels = reactive({
   }
 })
 
-// const emptyRoomObj = reactive({
-//   description: "",
-//   pictureUrlList: [],
-//   price: 0,
-//   size: 0
-// })
-//
-// let roomList = reactive([
-//   {
-//     description: "",
-//     pictureUrlList: [defaultRoomImg],
-//     price: 0,
-//     size: 0
-//   }
-// ])
-
+// setup时获取行政区信息
 RequestUtil.getDistricts('')
     .then(res => {
       provinceList.value = res
@@ -381,14 +397,17 @@ const onAddRoomClick = () => {
 /**
  * @function onRemoveRoomClick
  * @description 删除房间
+ * @param index 房间号
+ * @param roomList 房间列表
  */
-const onRemoveRoomClick = (index) => {
-  if (index === 0) {
+const onRemoveRoomClick = (index, roomList) => {
+  if (index === 0 && roomList.length === 1) {
     Notification.Notify('第一个房间不能删除', {
       type: msgType.WARNING,
       title: '提示'
     })
-  } else if (index > 0) {
+  } else {
+    // } else if (index >= 0 && roomList > 1) {
     newHouseDTO.roomList.splice(index, 1)
   }
 }
@@ -401,6 +420,7 @@ const onRemoveRoomClick = (index) => {
 const onCitySelectChange = (value) => {
   // console.log(value) // 获取已选项的label
 }
+
 /**
  * @function onCheckboxChange
  * @description 分配项改变时触发
@@ -440,9 +460,58 @@ const onSubmitHandler = () => {
       })
 }
 
+/**
+ * @function onRoomPicPreview
+ * @description click to preview the room pictures that already uploaded or need to upload
+ * @param {UploadFile} file
+ * */
+const onRoomPicPreview = (file) => {
+  console.log(file)
+  roomPicDialogUrl.value = file.url
+  roomPicDialogVisible.value = true
+}
+
+/**
+ * @function onRoomPicSuccess
+ * @description upload room pictures successfully
+ * @param {any} response response is an url
+ * @param {UploadFile} uploadFile
+ * */
+const onRoomPicSuccess = (response, uploadFile) => {
+  console.log(response)
+  console.log(uploadFile)
+  // console.log(newHouseDTO.roomList[uploadFile.index].pictureUrlList)
+  newHouseDTO.roomList[roomPicUploadIndex.value].pictureUrlList.push(response)
+}
+
+/**
+ * @function onRoomPicError
+ * @description upload room pictures failed
+ * @param {Error} error
+ * @param {UploadFile} uploadFile
+ * */
+const onRoomPicError = (error, uploadFile) => {
+  console.log(error)
+  console.log(uploadFile)
+  Notification.Notify('上传图片失败', {
+    type: msgType.ERROR,
+    title: '提示'
+  })
+}
+
+/**
+ * @function beforeRoomPicUpload
+ * @description before upload room pictures, save the index of the room, for onRoomPicSuccess() to get the index
+ * @param {number} index
+ * */
+const beforeRoomPicUpload = (index) => {
+  // console.log(index)
+  roomPicUploadIndex.value = index
+}
+
 // postCreateHouse(newHouseDTO)
-onMounted(() => {
-})
+// onMounted(() => {
+// })
 </script>
 
 <style>

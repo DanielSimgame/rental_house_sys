@@ -192,52 +192,6 @@ import Notification, {msgType} from "@/utils/basic/Notification";
 const route = useRoute();
 const router = useRouter();
 
-// let pageData = reactive({
-//   editHouseDTO: {
-//     address: {
-//       city: null,
-//       cityProper: null,
-//       latitude: 39.90,
-//       longitude: 116.38,
-//       province: "",
-//       street: ""
-//     },
-//     allocation: {
-//       airConditioner: false,
-//       balcony: false,
-//       centralHeating: false,
-//       fridge: false,
-//       gasStove: false,
-//       microwaveOven: false,
-//       separateBathroom: false,
-//       television: false,
-//       wardroe: false,
-//       washingMachine: false,
-//       waterHeater: false,
-//       wifi: false
-//     },
-//     description: "",
-//     id: null,
-//     roomList: [
-//       {
-//         description: "",
-//         pictureUrlList: [],
-//         price: 0,
-//         roomId: null,
-//         size: 0,
-//         tenement: {
-//           detail: null,
-//           gender: "",
-//           id: null,
-//           name: "",
-//           portrait: ""
-//         }
-//       }
-//     ],
-//     title: ""
-//   }
-// })
-
 let editHouseDTO = reactive({
   address: {
     city: null,
@@ -367,13 +321,10 @@ const onSubmitHandler = () => {
 
 if (route.query.houseId !== undefined) {
   RequestUtil.getSingleHouse(route.query.houseId).then(res => {
-    // console.log(res)
     Object.assign(editHouseDTO, res)
-    // console.log('editHouseDTO', editHouseDTO)
   })
 }
 
-// onMounted(() => {})
 </script>
 
 <style scoped>

@@ -26,15 +26,14 @@ let pageData = reactive({
  * @function initChatList
  * @description 初始化聊天列表
  * */
-const initChatList = async () => {
-  pageData.chats = await RequestUtil.getConversationList()
-      .then(r => r.json())
-      .then(res => {
-
-        // console.log(res);
-        return res;
-      });
-}
+// const initChatList = async () => {
+//   // pageData.chats = await RequestUtil.getConversationList()
+//   await RequestUtil.getConversationList()
+//       .then(r => r.json())
+//       .then(res => {
+//         pageData.chats = res;
+//       });
+// }
 
 /**
  * @function chatListItemSelected
@@ -47,7 +46,7 @@ const chatListItemSelected = (chat) => {
 }
 
 onMounted(() => {
-  initChatList();
+  // initChatList();
 });
 
 // 从store监听新消息

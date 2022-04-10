@@ -54,7 +54,7 @@
 
     <img class="mb-2 rounded-xl md:w-80 lg:w-96 xl:w-96 2xl:w-96" :src="imgUrl" alt
          @click="onHouseClick(houseInfo.id)"/>
-    <span class="house-info__name">
+    <span class="house-info__name" @click="onHouseClick(houseInfo.id)">
       <strong>{{ houseInfo.title }}</strong>
     </span>
     <div class="house-info__info grid grid-cols-3">

@@ -19,7 +19,7 @@
       </div>
 
       <div class="chat-list__body-item mb-1"
-           v-if="chatList.chats.length !== 1 && chatList.chats[0].id !== ''"
+           v-if="conversationList.length !== 1 && conversationList[0].id !== ''"
            v-for="(conversation, index) in conversationList" :key="index"
            @click="onSelectChat(conversation, index)">
         <div class="chat-list__body-item-content cursor-pointer h-full grid grid-cols-3 h-14 border rounded-full
@@ -44,7 +44,7 @@
       </div>
       <div
           class="chat-list__empty text-center flex-col justify-center items-center"
-          v-if="chatList.chats.length === 1 && chatList.chats[0].id === ''">
+          v-if="conversationList.length === 1 && conversationList[0].id === ''">
         <div class="chat-list__empty-icon">
           <el-icon name="chat-empty" :size="64">
             <MessageBox/>
@@ -111,7 +111,7 @@ let getNotice = () => {
       })
 }
 
-// get notice
+// get notice at setup
 getNotice()
 // get conversation list from server, it's an array.
 RequestUtil.getConversationList()
@@ -218,22 +218,6 @@ let getLatestMsgInMessageList = computed(() => (id) => {
   }
 })
 
-// /**
-//  * @function calcUnreadNumComputed
-//  * @description 返回未读消息数量
-//  * @param {Object} conversation 聊天对话
-//  * */
-// let calcUnreadNumComputed = () => (conversation) => {
-//   // calculate the unread message counts in conversationList array
-//   // let unreadNum = 0;
-//   let messageList = conversation.messageList;
-//   for (let i = 0; i < messageList.length; i++) {
-//     if (!messageList[i].read) {
-//       unreadNum[i].num++;
-//     }
-//   }
-// }
-
 /**
  * @function calcUnreadNumComputed
  * @description 返回未读消息数量
@@ -254,6 +238,20 @@ const calcUnreadNum = (conversation) => {
     unreadNum.push({id: conversation.id, num: count})
   } else {
     unreadNum[index].num = count
+  }
+}
+
+/**
+ * @function cleanUnread
+ * @description 清除未读消息数量
+ * */
+const cleanUnread = (conversation) => {
+  // clean the unread message counts in conversationList array
+  let index = unreadNum.findIndex(item => item.id === conversation.id);
+  if (index === -1) {
+    unreadNum.push({id: conversation.id, num: 0})
+  } else {
+    unreadNum[index].num = 0
   }
 }
 
@@ -303,14 +301,15 @@ function onSelectChat(conversation, index) {
   // 向父组件传递聊天对象
   emit('selectChat', conversation)
   // 未读消息的id数组
-  let unreadMsgIds = [];
+  // let unreadMsgIds = [];
   // 将聊天对象的消息列表中的未读消息id放入unreadMsgIds数组中
-  for (let msgKey in conversation.messageList) {
-    if (!conversation.messageList[msgKey].read && !isMyPostChat(conversation.messageList[msgKey].creatorId)) {
-      unreadMsgIds.push(conversation.messageList[msgKey].id)
-    }
-  }
-  getUnread(unreadMsgIds, conversation)
+  // for (let msgKey in conversation.messageList) {
+  //   if (!conversation.messageList[msgKey].read && !isMyPostChat(conversation.messageList[msgKey].creatorId)) {
+  //     unreadMsgIds.push(conversation.messageList[msgKey].id)
+  //   }
+  // }
+  cleanUnread(conversation)
+  // getUnread(unreadMsgIds, conversation)
 }
 
 /**
