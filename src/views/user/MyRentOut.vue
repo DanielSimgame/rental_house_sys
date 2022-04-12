@@ -91,7 +91,7 @@ let myRealEstateList = reactive([])
  * @param {number} pageNum 页码
  * @param {number} pageSize 每页数量
  * */
-const getRealEstateList = (pageNum = 0, pageSize = 10) => {
+const getRealEstateList = (pageNum = 0, pageSize = 100) => {
   // console.log(pageData.userId)
   RequestUtil.getHouseList(getHouseListType.GET_BY_USER, pageNum, pageSize, {userId: pageData.userId})
       .then(res => {

@@ -26,7 +26,6 @@
           group hover:bg-indigo-600 hover:text-white p-1 transition-colors">
           <div class="portrait-wrap flex items-center">
             <el-badge :value="unreadNum[index].num" :hidden="unreadNum[index].num === 0" :max="10" class="item">
-              <!--            <el-badge :value="calcUnreadNumComputed(conversation)" :hidden="calcUnreadNumComputed(conversation) === 0" :max="10" class="item">-->
               <img :src="conversation.portrait" class="h-12 w-12 rounded-full col-span-1" ondragstart="return false"
                    alt>
             </el-badge>

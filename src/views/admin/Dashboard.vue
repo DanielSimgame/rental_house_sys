@@ -35,7 +35,7 @@
       <!--      搜索结果-->
       <div class="search__results-wrap w-full">
         <!--    正常加载-->
-        <div v-if="!isEmptyList && !isLoading" class="house-list__wrap grid grid-cols-4 gap-5">
+        <div v-if="!isEmptyList && !isLoading" class="house-list__wrap grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
           <MyRealEstateInfoCardVue
             class="sm:mx-auto cursor-pointer"
             v-for="(item) in userHousesList.value"
@@ -112,7 +112,7 @@ let isSearched = ref(false)
  * @param {number} pageNum 页码
  * @param {number} pageSize 每页数量
  * */
-const getRealEstateList = (pageNum = 0, pageSize = 10) => {
+const getRealEstateList = (pageNum = 0, pageSize = 100) => {
   isLoading.value = true
   RequestUtil.getHouseList(getHouseListType.GET_BY_USER, pageNum, pageSize, {userId: pageData.userId})
       .then(res => {

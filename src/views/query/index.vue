@@ -85,7 +85,7 @@ let isEmptyList = ref(true)
 let isLoading = ref(true)
 
 const getSearchResult = async () => {
-  await RequestUtil.getHouseList(getHouseListType.GET_BY_CITY, resultPageNum.value, 10, {
+  await RequestUtil.getHouseList(getHouseListType.GET_BY_CITY, resultPageNum.value, 100, {
     city: keyword[1],
     district: keyword[2]
   })
