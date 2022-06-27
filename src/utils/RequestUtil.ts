@@ -59,7 +59,7 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/user/isPhoneAvailable?phone=${phone}`
         const res = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
-            return res;
+            return res.text();
         } else {
             return Promise.reject(res);
         }
@@ -74,7 +74,7 @@ export default {
         const reqUrl = `${store.getters.getApiServer}/user/isEmailAvailable?email=${email}`
         const res = await Network.fetchGet(reqUrl);
         if (res.status === 200) {
-            return res;
+            return res.text();
         } else {
             return Promise.reject(res);
         }

@@ -1,7 +1,7 @@
 <template>
   <div class="bg-gray-50">
     <div
-      class="login-bg my-0 px-4 py-12 sm:px-6 lg:flex lg:items-center lg:justify-between lg:py-16 lg:px-8"
+        class="login-bg my-0 px-4 py-12 sm:px-6 lg:flex lg:items-center lg:justify-between lg:py-16 lg:px-8"
     >
       <div class="lg:container h-80 relative">
         <div class="login-slogan absolute lg:left-60 md:left-10 top-0.5">
@@ -16,11 +16,12 @@
             <el-tab-pane name="captcha" disabled>
               <template #label>
                 <el-tooltip
-                  class="tooltips-item"
-                  effect="dark"
-                  :content="disabledMsg"
-                  placement="top"
-                >手机验证码登录</el-tooltip>
+                    class="tooltips-item"
+                    effect="dark"
+                    :content="disabledMsg"
+                    placement="top"
+                >手机验证码登录
+                </el-tooltip>
               </template>
             </el-tab-pane>
           </el-tabs>
@@ -30,29 +31,30 @@
             </el-form-item>
             <el-form-item label="密码">
               <el-input
-                v-model="loginForm.password"
-                placeholder="请输入密码"
-                @keyup.enter="onLoginClick"
-                type="password"
+                  v-model="loginForm.password"
+                  placeholder="请输入密码"
+                  @keyup.enter="onLoginClick"
+                  type="password"
               ></el-input>
             </el-form-item>
             <el-form-item>
               <div class="login-submit flex-row justify-between min-w-full">
                 <el-tooltip
-                  class="tooltips-item"
-                  effect="dark"
-                  content="请先同意《用户协议》与《个人隐私条例》"
-                  placement="bottom"
-                  :visible="loginBtnDisabled"
+                    class="tooltips-item"
+                    effect="dark"
+                    content="请先同意《用户协议》与《个人隐私条例》"
+                    placement="bottom"
+                    :visible="loginBtnDisabled"
                 >
                   <el-button
-                    type="primary"
-                    size="large"
-                    class="w-44"
-                    @click="onLoginClick"
-                    :disabled="loginBtnDisabled"
-                    :loading="loading"
-                  >登录</el-button>
+                      type="primary"
+                      size="large"
+                      class="w-44"
+                      @click="onLoginClick"
+                      :disabled="loginBtnDisabled"
+                      :loading="loading"
+                  >登录
+                  </el-button>
                 </el-tooltip>
                 <el-button size="large" class="w-20" @click="onSignupClick">注册</el-button>
               </div>
@@ -62,18 +64,22 @@
             <el-checkbox v-model="eulaAgreed" @change="onEulaChange">
               我已阅读并同意
               <el-button
-                class="login__btn-eula"
-                size="small"
-                type="text"
-                @click="onEulaClick"
-              >《用户协议》</el-button>与
+                  class="login__btn-eula"
+                  size="small"
+                  type="text"
+                  @click="onEulaClick"
+              >《用户协议》
+              </el-button>
+              与
               <el-button
-                class="login__btn-privacy"
-                size="small"
-                type="text"
-                style="margin-left: 0"
-                @click="onPrivacyClick"
-              >《个人隐私协议》</el-button>。
+                  class="login__btn-privacy"
+                  size="small"
+                  type="text"
+                  style="margin-left: 0"
+                  @click="onPrivacyClick"
+              >《个人隐私协议》
+              </el-button>
+              。
             </el-checkbox>
           </div>
         </div>
@@ -83,12 +89,12 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import {reactive, ref} from 'vue'
 // import store from "@/store";
 import {useStore} from "vuex";
 import RequestUtil from "@/utils/RequestUtil";
-import { goHome, goSignup } from "@/utils/RouterUtil";
-import Notification, { msgType } from "@/utils/basic/Notification";
+import {goHome, goSignup} from "@/utils/RouterUtil";
+import Notification, {msgType} from "@/utils/basic/Notification";
 import User from "@/utils/User";
 
 const store = useStore()
@@ -104,42 +110,90 @@ let loginForm = reactive({
 })
 
 /**
+ * @function loginValidator
+ * @description 校验登录表单
+ * @returns {boolean}
+ * */
+const loginValidator = () => {
+  if (!eulaAgreed.value) {
+    return false
+  }
+  if (loginForm.username.length === 0) {
+    Notification.Notify('用户名不能为空', {
+      title: '提示',
+      type: msgType.ERROR,
+    })
+    return false
+  }
+  // if loginForm.username includes any special character like !@#$%^&*() or non-ASCII character, return false
+  if (/[^\x00-\xff]/.test(loginForm.username) || /[^a-zA-Z0-9]/.test(loginForm.username)) {
+    Notification.Notify('用户名不能包含特殊字符', {
+      title: '提示',
+      type: msgType.ERROR,
+    })
+    return false
+  }
+  if (loginForm.password.length === 0) {
+    Notification.Notify('密码不能为空', {
+      title: '提示',
+      type: msgType.ERROR,
+    })
+    return false
+  }
+  if (loginForm.password.length < 6 || loginForm.password.length > 20) {
+    Notification.Notify('密码长度不能小于6位或大于20位', {
+      title: '提示',
+      type: msgType.ERROR,
+    })
+    return false
+  }
+  return true
+}
+
+/**
  * @function onLoginClick
  * @description 登录按钮点击事件
  * */
 const onLoginClick = async () => {
-  if (eulaAgreed.value === false) {
+  if (!loginValidator()) {
     return
   }
   loading.value = true
+  let userRole = ''
   await RequestUtil.postLogin(loginForm)
-    .then(r => {
-      loading.value = false
-      if (r.isLogin) {
-        User.setToken(r.token)
-        if (r.isAdmin) {
-          User.setRole('admin')
+      .then(r => {
+        if (r.isLogin) {
+          userRole = r.isAdmin ? 'admin' : 'user'
+          User.setRole(userRole)
+          User.setToken(r.token)
+          return r
         } else {
-          User.setRole('user')
-        }
-        RequestUtil.getUserInfo(r.token)
-          .then(r => {
-            store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
-            store.commit('setUserInfo', r)
-            goHome()
+          Notification.Notify('请检查您的账号密码', {
+            title: '登录失败',
+            type: msgType.ERROR,
           })
-      } else {
-        Notification.Notify('请检查您的账号密码', {
-          title: '登录失败',
-          type: msgType.ERROR,
-        })
-      }
-    })
-    .catch(err => {
-      console.log(err)
-      loading.value = false
-      Notification.Notify('登录失败！', { title: '错误', type: msgType.ERROR})
-    })
+        }
+      })
+      .then((res) => {
+        if (res !== undefined) {
+          console.log(res)
+          return RequestUtil.getUserInfo(res.token)
+        }
+      })
+      .then(r => {
+        if (r !== undefined) {
+          store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
+          store.commit('setUserInfo', r)
+          goHome()
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        Notification.Notify('登录失败！', {title: '错误', type: msgType.ERROR})
+      })
+      .finally(() => {
+        loading.value = false
+      })
 }
 
 /**

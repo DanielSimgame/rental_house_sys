@@ -13,14 +13,14 @@
               placeholder="请输入密码"
               type="password"
               show-password
-              @blur="checkPassword"
+              @blur="onInputPasswordBlur"
           ></el-input>
           <transition name="el-zoom-in-top">
             <div
                 class="password-illegal w-full mt-2 text-center rounded-lg border-5 bg-red-400 text-white"
-                v-if="isPasswordIllegal"
+                v-if="!isPasswordLegal && errorTips.passwordMsg !== ''"
             >
-              <span>密码长度不能小于6位或大于16位</span>
+              <span>{{ errorTips.passwordMsg }}</span>
             </div>
           </transition>
         </el-form-item>
@@ -30,14 +30,14 @@
               placeholder="请再次确认密码"
               type="password"
               show-password
-              @blur="checkPassword"
+              @blur="onInputConfirmPasswordBlur"
           ></el-input>
           <transition name="el-zoom-in-top">
             <div
                 class="password-illegal w-full mt-2 text-center rounded-lg border-5 bg-red-400 text-white"
                 v-if="!arePasswordsEqual"
             >
-              <span>两次输入密码必须一致</span>
+              <span>{{ errorTips.repeatPwMsg }}</span>
             </div>
           </transition>
         </el-form-item>
@@ -50,10 +50,9 @@
           <transition name="el-zoom-in-top">
             <div
                 class="phone-illegal w-full mt-2 text-center rounded-lg border-5 bg-red-400 text-white"
-                v-if="!isPhoneAvailable"
+                v-if="!isPhoneAvailable && errorTips.phoneMsg !== ''"
             >
-              <p>这个手机号码已被使用，</p>
-              <p>请尝试直接登录或者更换手机号。</p>
+              <p>{{ errorTips.phoneMsg }}</p>
             </div>
           </transition>
         </el-form-item>
@@ -63,6 +62,14 @@
               @blur="onInputEmailBlur"
               placeholder="请输入邮箱"
           ></el-input>
+          <transition name="el-zoom-in-top">
+            <div
+                class="phone-illegal w-full mt-2 text-center rounded-lg border-5 bg-red-400 text-white"
+                v-if="!isEmailAvailable && errorTips.emailMsg !== ''"
+            >
+              <p>{{ errorTips.emailMsg }}</p>
+            </div>
+          </transition>
         </el-form-item>
         <el-form-item label="性别">
           <el-radio v-model="signupForm.gender" label="女">女</el-radio>
@@ -93,7 +100,15 @@
         </el-button>
         。
       </el-checkbox>
-      <el-button type="primary" class="w-full" @click="onSignupSubmit" :loading="loading">注册</el-button>
+      <el-button type="primary" class="w-full" @click="onSubmitClick" :loading="loading">注册</el-button>
+      <transition name="el-zoom-in-top">
+        <div
+            class="phone-illegal w-full mt-2 text-center rounded-lg border-5 bg-red-400 text-white"
+            v-if="errorTips.eulaMsg !== ''"
+        >
+          <p>{{ errorTips.eulaMsg }}</p>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -105,6 +120,25 @@ import RequestUtil from '@/utils/RequestUtil';
 import User from '@/utils/User';
 import Notification, {msgType} from '@/utils/basic/Notification';
 import {goHome} from '@/utils/RouterUtil';
+
+const SIGNUP_ERRORS = {
+  USERNAME_EXISTS: '用户名已存在',
+  PHONE_EXISTS: '这个手机号码已被使用，\n请尝试直接登录或者更换手机号。',
+  PHONE_INVALID: '手机号码格式不正确',
+  EMAIL_EXISTS: '这个电子邮箱已被使用，\n请尝试直接登录或者更换电子邮箱。',
+  EMAIL_INVALID: '电子邮箱格式不正确',
+  PASSWORD_LENGTH_ERROR: '密码长度不能小于6位或大于20位',
+  PASSWORD_NOT_EQUAL: '两次输入密码必须一致',
+  EULA_NOT_AGREED: '您还没有同意用户协议与隐私协议',
+}
+
+let errorTips = reactive({
+  phoneMsg: '',
+  emailMsg: '',
+  passwordMsg: '',
+  repeatPwMsg: '',
+  eulaMsg: ''
+})
 
 // 注册表单
 let signupForm = reactive({
@@ -119,11 +153,20 @@ let signupForm = reactive({
 })
 let loading = ref(false)
 let confirmPassword = ref("")
-let isPasswordIllegal = ref(false)
+let isPasswordLegal = ref(true)
 let arePasswordsEqual = ref(true)
 let isPhoneAvailable = ref(true)
 let isEmailAvailable = ref(true)
 let eulaAgreed = ref(false)
+
+/**
+ * @function phoneValidate
+ * @description 检查手机号码是否合法
+ * @returns {boolean}
+ * */
+const phoneValidate = () => {
+  return /^1[3456789]\d{9}$/.test(signupForm.phone)
+}
 
 /**
  * @function onInputPhoneBlur
@@ -131,66 +174,155 @@ let eulaAgreed = ref(false)
  */
 const onInputPhoneBlur = async () => {
   const phone = signupForm.phone
-  RequestUtil.getPhoneAvailability(phone)
-      .then(res => {
-        isPhoneAvailable.value = res.status === 200;
-      })
+  let val = phoneValidate()
+  // if (phone.length === 11 && phone.startsWith('1')) {
+  if (val) {
+    RequestUtil.getPhoneAvailability(phone)
+        .then(res => {
+          if (res === "true") {
+            val = true
+          } else {
+            val = false
+            errorTips.phoneMsg = SIGNUP_ERRORS.PHONE_EXISTS
+          }
+          isPhoneAvailable.value = val
+        })
+  } else {
+    errorTips.phoneMsg = SIGNUP_ERRORS.PHONE_INVALID
+    isPhoneAvailable.value = val
+  }
 }
+
+/**
+ * @function emailValidate
+ * @description 邮箱格式验证
+ * @returns {boolean}
+ */
+const emailValidate = () => {
+  return (signupForm.email.includes("@") && signupForm.email.includes("."))
+}
+
 /**
  * @function onInputEmailBlur
  * @description email输入框失去焦点时触发
  */
 const onInputEmailBlur = () => {
   const email = signupForm.email
-  RequestUtil.getEmailAvailability(email)
-      .then(res => {
-        isEmailAvailable.value = res.status === 200;
-      })
+  let val = emailValidate()
+  // 邮箱输入框包含@与.的情况下，视为正确
+  if (val) {
+    RequestUtil.getEmailAvailability(email)
+        .then(res => {
+          if (res === "true") {
+            val = true
+          } else {
+            val = false
+            errorTips.emailMsg = SIGNUP_ERRORS.EMAIL_EXISTS
+          }
+          isEmailAvailable.value = val
+        })
+  } else {
+    errorTips.emailMsg = SIGNUP_ERRORS.EMAIL_INVALID
+    isEmailAvailable.value = val
+  }
 }
 
 /**
- * @function checkPassword
- * @description 检查密码是否合法
+ * @function inputPasswordValidate
+ * @description 密码输入框密码合法性校验
+ * @returns {boolean}
+ * */
+const inputPasswordValidate = () => {
+  return (signupForm.password.length >= 6 && signupForm.password.length <= 20)
+}
+
+/**
+ * @function onInputPasswordBlur
+ * @description password输入框失去焦点时触发,检查密码是否合法
  */
-const checkPassword = () => {
-  isPasswordIllegal.value = signupForm.password.length < 6 || signupForm.password.length > 16;
-  arePasswordsEqual.value = confirmPassword.value === signupForm.password;
+const onInputPasswordBlur = () => {
+  let val = inputPasswordValidate()
+  if (!val) {
+    errorTips.passwordMsg = SIGNUP_ERRORS.PASSWORD_LENGTH_ERROR
+  }
+  isPasswordLegal.value = val
+  if (confirmPassword.value !== '') {
+    onInputConfirmPasswordBlur()
+  }
 }
 
 /**
- * @function onSignupSubmit
+ * @function confirmPasswordValidate
+ * @description 检查两次输入的密码是否一致
+ * @returns {boolean}
+ * */
+const confirmPasswordValidate = () => {
+  if (confirmPassword.value !== '') {
+    return  confirmPassword.value === signupForm.password
+  }
+  return false
+}
+
+/**
+ * @function onInputConfirmPasswordBlur
+ * @description confirm password输入框失去焦点时触发,检查密码是否合法
+ */
+const onInputConfirmPasswordBlur = () => {
+  let val = confirmPasswordValidate()
+  if (!val) {
+    errorTips.repeatPwMsg = SIGNUP_ERRORS.PASSWORD_NOT_EQUAL
+  }
+  arePasswordsEqual.value = val
+}
+
+/**
+ * @function onSubmitClick
  * @description 注册按钮点击事件
  */
-const onSignupSubmit = async () => {
-  loading.value = true
-  signupForm.name = signupForm.username
-  await RequestUtil.postSignUp(signupForm)
-      .then(r => {
-        loading.value = false
-        if (r.isLogin) {
-          Notification.Notify('注册成功，正在跳转到主页面', {title: '注册成功', type: msgType.SUCCESS})
-          User.setToken(r.token)
-          if (r.isAdmin) {
-            User.setRole('admin')
+const onSubmitClick = async () => {
+
+  // check if all fields are filled
+  if (signupForm.email === '' || signupForm.username === '' || signupForm.password === '' || signupForm.phone === '' || signupForm.gender === '') {
+    Notification.Notify("请完善注册信息", {
+      type: msgType.ERROR,
+      title: '错误'
+    })
+    return
+  }
+
+  if (eulaAgreed.value) {
+    loading.value = true
+    signupForm.name = signupForm.username
+    await RequestUtil.postSignUp(signupForm)
+        .then(r => {
+          loading.value = false
+          if (r.isLogin) {
+            Notification.Notify('注册成功，正在跳转到主页面', {title: '注册成功', type: msgType.SUCCESS})
+            User.setToken(r.token)
+            if (r.isAdmin) {
+              User.setRole('admin')
+            } else {
+              User.setRole('user')
+            }
+            RequestUtil.getUserInfo(r.token)
+                .then(r => {
+                  store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
+                  store.commit('setUserInfo', r)
+                  goHome()
+                })
           } else {
-            User.setRole('user')
+            Notification.Notify('注册出错，请重试。若反复出现请联系网站管理员。', {
+              title: '注册失败',
+              type: msgType.ERROR,
+            })
           }
-          RequestUtil.getUserInfo(r.token)
-              .then(r => {
-                store.commit('setUserRole', r.role === 1 ? 'admin' : 'user')
-                store.commit('setUserInfo', r)
-                goHome()
-              })
-        } else {
-          Notification.Notify('注册出错，请重试。若反复出现请联系网站管理员。', {
-            title: '注册失败',
-            type: msgType.ERROR,
-          })
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+  } else {
+    errorTips.eulaMsg = SIGNUP_ERRORS.EULA_NOT_AGREED
+  }
 }
 
 /**
