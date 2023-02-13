@@ -51,10 +51,10 @@
   resolved "https://registry.npmjs.org/@headlessui/vue/-/vue-1.5.0.tgz"
   integrity sha512-jAp6XYpqdEv32xhszaj5ejvjaX5qhu20sCbxu7lplePEfZL+4ffabivJBBTZAiPWczqAXmnZWNWG5DOyqjRa4w==
 
-"@heroicons/vue@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/@heroicons/vue/-/vue-1.0.5.tgz"
-  integrity sha512-idWtp20Fjr7mqnD7EdGDUDi83oWHnx3SwyuQY6GZyF33OApzpBOLxz7xa4t6rPOddGz9tI5RGnndLk+ake7ijQ==
+"@heroicons/vue@^2.0.15":
+  version "2.0.15"
+  resolved "https://registry.yarnpkg.com/@heroicons/vue/-/vue-2.0.15.tgz#2c8b26549cca2cc91a319b09546ef6d7b57eac75"
+  integrity sha512-Ab98jXcuYPCDtwOmdr5REtUfJCrZf7cnOnh9bD99bM5h1yfTnCPBKjMmJ9gcmyGu51Dzf11Mx/A7rKxAXjccvg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
